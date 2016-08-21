@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Event <%- title %></title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+  </head>
+ 
+  <body>
+ 
+    <div class="container">
+ 
+      <div class="jumbotron">
+        <h3>Event Details</h3>
+        <pre style="white-space: pre-wrap"><%- JSON.stringify(eventDetails) %></pre>
+        <form class="form-signin" action="/event/<%- eventId %>?active=false" method="post">
+          <button id="btnSignIn" class="btn btn-lg btn-primary btn-block" type="submit">Delete Event!</button>
+        </form>
+      </div>
+ 
+      <footer class="footer">
+        <p>&copy; Company 2016</p>
+      </footer>
+ 
+    </div>
+  </body>
+  <script>
+
+  function getCoordinates () {
+    navigator.geolocation.getCurrentPosition(function (geoObj) {
+      console.log("Coord Setting:", geoObj);
+      document.getElementById("locationPref").value = geoObj.coords.latitude + "::" + geoObj.coords.longitude;
+    });
+  };
+  </script>
+</html>
