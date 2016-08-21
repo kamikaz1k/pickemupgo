@@ -35,14 +35,22 @@
       <div class="form-group">
         <label for="search-long" class="col-sm-2 control-label">Longitude:</label>
         <div class="col-sm-10">
+<<<<<<< HEAD
+          <input type="text" class="form-control" name = "title" id="search-event" placeholder="" value="<% eventDetails.title %>" required>
+=======
           <input type="number" class="form-control" id="search-long" placeholder="Long: 43.6532" value="43.6532" disabled>
+>>>>>>> 5dc70f421b067379ceda3a1456bee0680315d4b7
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-lat" class="col-sm-2 control-label">Latitude:</label>
         <div class="col-sm-10">
+<<<<<<< HEAD
+          <input type="text" class="form-control" name = "host" id="search-host" placeholder="" value="<% eventDetails.host %>" required>
+=======
           <input type="number" class="form-control" id="search-lat" placeholder="Lat: 79.3832" value="79.3832" disabled>
+>>>>>>> 5dc70f421b067379ceda3a1456bee0680315d4b7
         </div>
       </div>
 
@@ -59,6 +67,7 @@
         <label for="search-host" class="col-sm-2 control-label">Host:</label>
         <div class="col-sm-10">
           <input type="text" class="form-control" name="host" id="search-host" placeholder="" value="<%= eventDetails.host %>">
+
         </div>
       </div>
 
@@ -112,9 +121,13 @@
           -->
 
           <button id="submitForm" type="submit" class="btn btn-success">Submit</button>
+          <button id="goToMaps" type="button" class="btn btn-default">Go to Maps</button>
         </div>
       </div>
 
+    </form>
+    <form class="form-signin" action="/event/<%- eventId %>?active=false" method="post">
+          <button id="btnSignIn" class="btn btn-lg btn-primary btn-block" type="submit">Delete Event!</button>
     </form>
 
   </div>
@@ -167,20 +180,22 @@ $(document).ready(function (){
     $('#search-long').val(localStorage.longitude);
   }
 
+
   
 
 
 
-  var latitude = localStorage.latitude || 51.505;
-  var longitude = localStorage.longitude || -0.09;
+  //var latitude = localStorage.latitude || 51.505;
+  //var longitude = localStorage.longitude || -0.09;
 
-
+  var eventLatitude = eventDetails.location.coordinates[1];
+  var eventLongitude = eventDetails.location.coordinates[0];
 
 
 
   // initialize the map on the "map" div with a given center and zoom
   window.mymap = L.map('map', {
-      center: [latitude, longitude],
+      center: [eventLatitude, eventLongitude],
       zoom: 13
   });
 
@@ -192,7 +207,7 @@ $(document).ready(function (){
   }).addTo(mymap);
 
   // Add marker to map at current location
-  window.marker1 = L.marker([latitude, longitude]);
+  window.marker1 = L.marker([eventLatitude, eventLongitude]);
               marker1.addTo(mymap);
 
               //.bindPopup('Current Location')
@@ -217,6 +232,13 @@ $(document).ready(function (){
   }
   */
 
+
+
+  $(function() {
+    $('#goToMaps').click(function() {
+        window.location.href = eventDetails.url; 
+    });
+  });
 
 
   //Creating a JSON object to send form data to Server
