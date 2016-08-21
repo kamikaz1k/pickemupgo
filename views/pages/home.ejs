@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pick'emup GO</title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+  </head>
+ 
+  <body>
+    
+    <div class="container">
+ 
+      <div class="">
+        <h3>Welcome to Pick'emup GO!</h3>
+        <!-- <ul class="list-group">
+          <li class="list-group-item"><p><a href="/find_events">Looking to Join a game?</a></p></li>
+          <li class="list-group-item"><p><a href="/new_event">Looking to Host an event?</a></p></li>
+        </ul> -->
+        <div class="list-group">
+          <a href="/find_events" class="list-group-item list-group-item-action">Looking to Join a game?</a>
+          <a href="/new_event" class="list-group-item list-group-item-action">Looking to Host an event?</a>
+        </div>
+      </div>
+ 
+    </div>
+  </body>
+  <script>
+
+  function getCoordinates () {
+    navigator.geolocation.getCurrentPosition(function (geoObj) {
+      console.log("Coord Setting:", geoObj);
+      document.getElementById("locationPref").value = geoObj.coords.latitude + "::" + geoObj.coords.longitude;
+    });
+  };
+  </script>
+</html>

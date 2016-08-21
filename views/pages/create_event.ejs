@@ -32,14 +32,14 @@
       <div class="form-group">
         <label for="search-long" class="col-sm-2 control-label">Longitude:</label>
         <div class="col-sm-10">
-          <input type="number" class="form-control" id="search-long" placeholder="Long: 43.6532" value="43.6532" disabled required>
+          <input type="number" class="form-control" id="search-long" placeholder="Long: 43.6532" value="43.6532" disabled>
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-lat" class="col-sm-2 control-label">Latitude:</label>
         <div class="col-sm-10">
-          <input type="number" class="form-control" id="search-lat" placeholder="Lat: 79.3832" value="79.3832" disabled required>
+          <input type="number" class="form-control" id="search-lat" placeholder="Lat: 79.3832" value="79.3832" disabled>
         </div>
       </div>
 
@@ -48,56 +48,56 @@
       <div class="form-group">
         <label for="search-event" class="col-sm-2 control-label">Event:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Event" id="search-event" placeholder="e.g. Soccer" value="" required>
+          <input type="text" class="form-control" name="title" id="search-event" placeholder="e.g. Soccer" value="">
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-host" class="col-sm-2 control-label">Host:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Host" id="search-host" placeholder="" value="" required>
+          <input type="text" class="form-control" name="host" id="search-host" placeholder="" value="">
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-location" class="col-sm-2 control-label">Location:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Location" id="search-location" placeholder="e.g. YMCA" value="" required>
+          <input type="text" class="form-control" name="location_name" id="search-location" placeholder="e.g. YMCA" value="">
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-date" class="col-sm-2 control-label">Date:</label>
         <div class="col-sm-10">
-          <input type="date" class="form-control" name = "Date" id="search-date" placeholder="" value="" required>
+          <input type="date" class="form-control" name="date" id="search-date" placeholder="" value="">
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-start" class="col-sm-2 control-label">Start Time:</label>
         <div class="col-sm-10">
-          <input type="time" class="form-control" name = "Start-Time" id="search-start" placeholder="" value="" required>
+          <input type="time" class="form-control" name="start_time" id="search-start" placeholder="" value="">
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-end" class="col-sm-2 control-label">End Time:</label>
         <div class="col-sm-10">
-          <input type="time" class="form-control" name = "End-Time" id="search-end" placeholder="" value="" >
+          <input type="time" class="form-control" name="end_time" id="search-end" placeholder="" value="">
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-type" class="col-sm-2 control-label">Event Type:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Event-Type" id="search-type" placeholder="" value="" >
+          <input type="text" class="form-control" name="activity_type" id="search-type" placeholder="" value="">
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-size" class="col-sm-2 control-label">Group Size:</label>
         <div class="col-sm-10">
-          <input type="number" class="form-control" name = "Group-Size" id="search-size" placeholder="" value="" >
+          <input type="number" class="form-control" name="group_size" id="search-size" placeholder="" value="">
         </div>
       </div>
 
@@ -234,9 +234,11 @@ $(document).ready(function (){
         });
 
         //Add place JSON and latlng
-        o["Place"] = place;
-        o["Latitude"] = finalLatitude;
-        o["Longitude"] = finalLongitude;
+        // o["place"] = place;
+        o["url"] = window.place.url;
+        o["formatted_address"] = window.place.formatted_address;
+        o["latitude"] = window.finalLatitude;
+        o["longitude"] = window.finalLongitude;
 
         return o;
     };
@@ -246,6 +248,18 @@ $(document).ready(function (){
       e.preventDefault();
       var data = $(this).serializeFormJSON();
       console.log(data);
+      $.ajax({
+          url: '/new_event',
+          data: data,
+          type: 'POST',
+          success: function(response) {
+              console.log("Success",response);
+              window.location.href = response.url;
+          },
+          error: function(error) {
+              console.log("Error",error);
+          }
+      });
 
       /* Object
           email: "value"
@@ -278,9 +292,10 @@ function initAutocomplete() {
     }
 
 function fillInAddress() {
+  console.log("fillInAddress");
         // Get the place details from the autocomplete object.
         window.place = autocomplete.getPlace();
-        //console.log(place);
+        console.log(place);
         var geoLocation = place.geometry.location;
         //console.log(geoLocation);
         window.finalLatitude = geoLocation.lat();
