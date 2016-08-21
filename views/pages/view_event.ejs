@@ -28,77 +28,77 @@
       <div class="form-group">
         <label for="search-event" class="col-sm-2 control-label">Event:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Event" id="search-event" placeholder="" value="" required>
+          <input type="text" class="form-control" name = "title" id="search-event" placeholder="" value="<% eventDetails.title %>" required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-host" class="col-sm-2 control-label">Host:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Host" id="search-host" placeholder="" value="" required>
+          <input type="text" class="form-control" name = "host" id="search-host" placeholder="" value="<% eventDetails.host %>" required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-location" class="col-sm-2 control-label">Location:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Location" id="search-location" placeholder="" value="" required>
+          <input type="text" class="form-control" name = "location_name" id="search-location" placeholder="" value="<% eventDetails.location_name %>" required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-address" class="col-sm-2 control-label">Address:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Date" id="search-address" placeholder="" value="" required>
+          <input type="text" class="form-control" name = "formatted_address" id="search-address" placeholder="" value="<% eventDetails.formatted_address %>" required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-active" class="col-sm-2 control-label">Is this event active:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Date" id="search-active" placeholder="" value="" required>
+          <input type="text" class="form-control" name = "active" id="search-active" placeholder="" value="<% eventDetails.active %>" required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-date" class="col-sm-2 control-label">Date:</label>
         <div class="col-sm-10">
-          <input type="date" class="form-control" name = "Date" id="search-date" placeholder="" value="" required>
+          <input type="date" class="form-control" name = "date" id="search-date" placeholder="" value="<% eventDetails.date %>" required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-start" class="col-sm-2 control-label">Start Time:</label>
         <div class="col-sm-10">
-          <input type="time" class="form-control" name = "Start-Time" id="search-start" placeholder="" value="" required>
+          <input type="time" class="form-control" name = "start_time" id="search-start" placeholder="" value="<% eventDetails.start_time %>" required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-end" class="col-sm-2 control-label">End Time:</label>
         <div class="col-sm-10">
-          <input type="time" class="form-control" name = "End-Time" id="search-end" placeholder="" value="" >
+          <input type="time" class="form-control" name = "end_time" id="search-end" placeholder="" value="<% eventDetails.end_time %>" >
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-type" class="col-sm-2 control-label">Event Type:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Event-Type" id="search-type" placeholder="" value="" >
+          <input type="text" class="form-control" name = "activity_type" id="search-type" placeholder="" value="<% eventDetails.activity_type %>" >
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-size" class="col-sm-2 control-label">Group Size:</label>
         <div class="col-sm-10">
-          <input type="number" class="form-control" name = "Group-Size" id="search-size" placeholder="" value="" >
+          <input type="number" class="form-control" name = "group_size" id="search-size" placeholder="" value="<% eventDetails.group_size %>" >
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-commits" class="col-sm-2 control-label">No. of Commitments:</label>
         <div class="col-sm-10">
-          <input type="number" class="form-control" name = "Date" id="search-commits" placeholder="" value="" >
+          <input type="number" class="form-control" name = "people_committed" id="search-commits" placeholder="" value="<% eventDetails.people_committed %>" >
         </div>
       </div>
 
@@ -168,8 +168,6 @@ $(document).ready(function (){
     $('#search-long').val(localStorage.longitude);
   }
 
-  */
-
   $('#search-event').val(details.title);
   $('#search-host').val(details.host);
   $('#search-location').val(details.location_name);
@@ -180,6 +178,9 @@ $(document).ready(function (){
   $('#search-size').val(details.group_size);
   $('#search-active').val(details.active);
   $('#search-address').val(details.formatted_address);
+
+  
+  */
 
   //var latitude = localStorage.latitude || 51.505;
   //var longitude = localStorage.longitude || -0.09;
