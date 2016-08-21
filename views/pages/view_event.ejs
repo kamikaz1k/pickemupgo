@@ -118,9 +118,13 @@
           -->
 
           <button id="submitForm" type="submit" class="btn btn-success">Submit</button>
+          <button id="goToMaps" type="button" class="btn btn-default">Go to Maps</button>
         </div>
       </div>
 
+    </form>
+    <form class="form-signin" action="/event/<%- eventId %>?active=false" method="post">
+          <button id="btnSignIn" class="btn btn-lg btn-primary btn-block" type="submit">Delete Event!</button>
     </form>
 
   </div>
@@ -178,16 +182,17 @@ $(document).ready(function (){
 
 
 
-  var latitude = localStorage.latitude || 51.505;
-  var longitude = localStorage.longitude || -0.09;
+  //var latitude = localStorage.latitude || 51.505;
+  //var longitude = localStorage.longitude || -0.09;
 
-
+  var eventLatitude = eventDetails.location.coordinates[1];
+  var eventLongitude = eventDetails.location.coordinates[0];
 
 
 
   // initialize the map on the "map" div with a given center and zoom
   window.mymap = L.map('map', {
-      center: [latitude, longitude],
+      center: [eventLatitude, eventLongitude],
       zoom: 13
   });
 
@@ -199,7 +204,7 @@ $(document).ready(function (){
   }).addTo(mymap);
 
   // Add marker to map at current location
-  window.marker1 = L.marker([latitude, longitude]);
+  window.marker1 = L.marker([eventLatitude, eventLongitude]);
               marker1.addTo(mymap);
 
               //.bindPopup('Current Location')
@@ -224,6 +229,13 @@ $(document).ready(function (){
   }
   */
 
+
+
+  $(function() {
+    $('#goToMaps').click(function() {
+        window.location.href = eventDetails.url; 
+    });
+  });
 
 
   //Creating a JSON object to send form data to Server
