@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Financial Planner</title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+  </head>
+ 
+  <body>
+ 
+    <div class="container">
+      <!-- <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" ><a href="/">Home</a></li>
+            <li role="presentation" class="active"><a href="#">Sign In</a></li>
+            <li role="presentation" ><a href="/showSignUp">Sign Up</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">Python Flask App</h3>
+      </div> -->
+ 
+      <div class="jumbotron">
+        <h1>Create an Event!</h1>
+        <form class="form-signin" action="/new_event" method="post">
+          
+          <label for="inputEmail" class="sr-only">Event Name</label>
+          <input type="text" name="title" id="inputEmail" class="form-control" placeholder="Event Name" required autofocus>
+          
+          <label for="inputHost" class="sr-only">Hosted By</label>
+          <input type="txt" name="host" id="inputHost" class="form-control" placeholder="Host" required>
+          
+          <label for="inputLocation" class="sr-only">Location</label>
+          <input type="txt" name="location" id="inputLocation" class="form-control" placeholder="Location" required>
+          
+          <label for="inputStartTime" class="sr-only">Start Time</label>
+          <input type="text" name="start" id="inputStartTime" class="form-control" placeholder="Start Time" required autofocus>
+          
+          <label for="inputEndTime" class="sr-only">End Time</label>
+          <input type="txt" name="end" id="inputEndTime" class="form-control" placeholder="End Time" required>
+          
+          <label for="inputActivityType" class="sr-only">Activity Type</label>
+          <input type="text" name="activityType" id="inputActivityType" class="form-control" placeholder="Activity Type" required autofocus>
+          
+          <label for="inputGroupSize" class="sr-only">Group Size</label>
+          <input type="txt" name="groupSize" id="inputGroupSize" class="form-control" placeholder="Group Size" required>
+           
+          <button id="btnSignIn" class="btn btn-lg btn-primary btn-block" type="submit">Create Event!</button>
+        </form>
+      </div>
+ 
+      <footer class="footer">
+        <p>&copy; Company 2016</p>
+      </footer>
+ 
+    </div>
+  </body>
+</html>

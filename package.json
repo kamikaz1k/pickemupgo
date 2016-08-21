@@ -1,0 +1,21 @@
+{
+  "name": "hackthe6ix",
+  "version": "1.0.0",
+  "description": "hackthe6ix project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "ejs": "^2.5.1",
+    "express": "^4.14.0",
+    "firebase": "^3.3.0",
+    "indico.io": "^0.10.2",
+    "mongodb": "^2.2.7",
+    "passport": "^0.3.2",
+    "ws": "^1.1.1"
+  }
+}
