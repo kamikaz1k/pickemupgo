@@ -83,21 +83,21 @@
       <div class="form-group">
         <label for="search-end" class="col-sm-2 control-label">End Time:</label>
         <div class="col-sm-10">
-          <input type="time" class="form-control" name = "End-Time" id="search-end" placeholder="" value="" required>
+          <input type="time" class="form-control" name = "End-Time" id="search-end" placeholder="" value="" >
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-type" class="col-sm-2 control-label">Event Type:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Event-Type" id="search-type" placeholder="" value="" required>
+          <input type="text" class="form-control" name = "Event-Type" id="search-type" placeholder="" value="" >
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-size" class="col-sm-2 control-label">Group Size:</label>
         <div class="col-sm-10">
-          <input type="number" class="form-control" name = "Group-Size" id="search-size" placeholder="" value="" required>
+          <input type="number" class="form-control" name = "Group-Size" id="search-size" placeholder="" value="" >
         </div>
       </div>
 
@@ -127,7 +127,7 @@
 <script>
 
 
-
+/*
 $(function() {
     $('#getLocation').click(function() {
         //console.log("$('form').serialize(): ",$('form').serialize());
@@ -151,18 +151,30 @@ $(function() {
         });
     });
 });
+*/
 
 
 
 $(document).ready(function (){
+
+  
 
   if (localStorage.latitude && localStorage.longitude) {
     $('#search-lat').val(localStorage.latitude);
     $('#search-long').val(localStorage.longitude);
   }
 
+  
+
+
+
   var latitude = localStorage.latitude || 51.505;
   var longitude = localStorage.longitude || -0.09;
+
+
+
+
+
   // initialize the map on the "map" div with a given center and zoom
   window.mymap = L.map('map', {
       center: [latitude, longitude],
@@ -201,6 +213,8 @@ $(document).ready(function (){
 
   }
   */
+
+
 
   //Creating a JSON object to send form data to Server
   (function () {
