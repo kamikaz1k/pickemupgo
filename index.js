@@ -10,8 +10,7 @@ var database = {}; // Global reference to the DB
 var passport = require('passport');
 // console.log(passport);
 
-var creds = require("./creds").mongodb;
-var mongoURI = process.env.MONGODB_URI || creds; 
+var mongoURI = process.env.MONGODB_URI || require("./creds").mongodb; 
 // Connect to the db
 MongoClient.connect(mongoURI, function(error, db) {
     // Get reference to DB
