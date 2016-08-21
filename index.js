@@ -95,7 +95,7 @@ app.get("/event_page/:eventId", function (request, response) {
                     eventDetails: items[0], 
                     eventId: items[0]._id 
                 };
-                response.render("pages/event_details", details);
+                response.render("pages/view_event", details);
             } else {
                 console.error("Dump Error:", error);
                 response.status(500).send({ error: 'DUMP FAILED' });
