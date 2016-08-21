@@ -125,27 +125,35 @@ app.post("/event/:eventId", function (request, response) {
         return;
     }
 
-    options._id = ObjectID(request.params.eventId);
+    // Had to wrap the _id param in quote, otherwise it didn't work.
+    options["_id"] = ObjectID(request.params.eventId);
     options.justOne = true;
 
     var updateOptions = {};
 
-    if (request.query.active == false) { 
-        console.log("request.query",request.query);
-        updateOptions.$set = { "active": false } 
+    if (request.query.active === "false") { 
+        console.log("### request.query",request.query);
+
+    } else if (request.query.active === "true") {
+        updateOptions = { $set : { "active": "true" } };
     }
 
-    console.log("Deleteing ", request.params.eventId, options);
-    database.collection('restaurants')
-    .updateOne(options,
+    // console.log("Updating ", request.params.eventId, options);
+    console.log("### Updating ", request.params.eventId, request.query, options);
+
+    database.collection('eventEntry')
+    .update(
+        options,
+        // {"_id": ObjectID("57b925c7c83b242f4c2a251f") },
+        // { $set : { "active": "false" } },
         updateOptions,
         function (error, results) {
-            console.log(results);
+            // console.log(results);
             if (!error) {
-                console.log("Deleted", results); 
-                response.send({ message: "Update successful", data: results[0] }); 
+                console.log("### Updated", results); 
+                response.send({ message: "Update successful", data: results }); 
             } else {
-                console.log("ERROR DELETING", options._id, error); 
+                console.log("### ERROR DELETING", options._id, error); 
                 response.send({ error: error });
             }
         }
@@ -170,6 +178,10 @@ app.post("/signin",
         response.send("signed in!", request.user.username);
     }
 );
+
+app.get("/find_events", function (request, response) {
+    response.render("pages/search_listings");
+});
 
 app.get('/search', function (request, response) {
 
@@ -214,6 +226,7 @@ function EventEntry (options) {
     this.title = options.title ? options.title : "";
     this.host = options.host ? options.host : "";
     this.address = options.address ? options.address : ""; 
+    this.active = options.active ? options.active : "true"; 
     this.location = { type: "Point", coordinates: [ parseFloat(longitude), parseFloat(latitude) ] };
     this.start = options.start ? options.start : "";
     this.end = options.end ? options.end : "";
