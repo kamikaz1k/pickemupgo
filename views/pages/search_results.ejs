@@ -7,6 +7,8 @@
   </head>
  
   <body>
+
+    <% include ../partials/navbar.ejs %>
  
     <div class="container">
  
@@ -17,7 +19,7 @@
 
           <% for(var i = 0; i < events.length; i++) {%>
             <li class="list-group-item" onclick="openEventPage('<%= events[i]["_id"] %>')">
-              <p><%= events[i].title %></p>
+              <p><%= events[i].title %></p> Hosted by 
             </li>
           <% } %>
 
