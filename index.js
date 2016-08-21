@@ -82,7 +82,7 @@ app.get("/event_page/:eventId", function (request, response) {
     var options = {};
     options._id = ObjectID(request.params.eventId);
 
-    console.log("options",options);
+    // console.log("options",options);
 
     database.collection('eventEntry')
         .find(options).toArray(function (error, items) {
@@ -94,6 +94,7 @@ app.get("/event_page/:eventId", function (request, response) {
                     eventDetails: items[0], 
                     eventId: items[0]._id 
                 };
+                console.log("### eventDetails", details);
                 response.render("pages/view_event", details);
             } else {
                 console.error("Dump Error:", error);
@@ -186,6 +187,10 @@ app.post("/signin",
 );
 
 app.get("/find_events", function (request, response) {
+    response.render("pages/search_listings");
+});
+// duplicate of above
+app.get("/search_events", function (request, response) {
     response.render("pages/search_listings");
 });
 
