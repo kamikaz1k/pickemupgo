@@ -127,7 +127,7 @@
 <script>
 
 
-
+/*
 $(function() {
     $('#getLocation').click(function() {
         //console.log("$('form').serialize(): ",$('form').serialize());
@@ -151,18 +151,30 @@ $(function() {
         });
     });
 });
+*/
 
 
 
 $(document).ready(function (){
+
+  
 
   if (localStorage.latitude && localStorage.longitude) {
     $('#search-lat').val(localStorage.latitude);
     $('#search-long').val(localStorage.longitude);
   }
 
+  
+
+
+
   var latitude = localStorage.latitude || 51.505;
   var longitude = localStorage.longitude || -0.09;
+
+
+
+
+
   // initialize the map on the "map" div with a given center and zoom
   window.mymap = L.map('map', {
       center: [latitude, longitude],
@@ -201,6 +213,8 @@ $(document).ready(function (){
 
   }
   */
+
+
 
   //Creating a JSON object to send form data to Server
   (function () {

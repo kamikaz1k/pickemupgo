@@ -47,6 +47,20 @@
       </div>
 
       <div class="form-group">
+        <label for="search-address" class="col-sm-2 control-label">Address:</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name = "Date" id="search-address" placeholder="" value="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="search-active" class="col-sm-2 control-label">Is this event active:</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name = "Date" id="search-active" placeholder="" value="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
         <label for="search-date" class="col-sm-2 control-label">Date:</label>
         <div class="col-sm-10">
           <input type="date" class="form-control" name = "Date" id="search-date" placeholder="" value="" required>
@@ -63,21 +77,28 @@
       <div class="form-group">
         <label for="search-end" class="col-sm-2 control-label">End Time:</label>
         <div class="col-sm-10">
-          <input type="time" class="form-control" name = "End-Time" id="search-end" placeholder="" value="" required>
+          <input type="time" class="form-control" name = "End-Time" id="search-end" placeholder="" value="" >
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-type" class="col-sm-2 control-label">Event Type:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" name = "Event-Type" id="search-type" placeholder="" value="" required>
+          <input type="text" class="form-control" name = "Event-Type" id="search-type" placeholder="" value="" >
         </div>
       </div>
 
       <div class="form-group">
         <label for="search-size" class="col-sm-2 control-label">Group Size:</label>
         <div class="col-sm-10">
-          <input type="number" class="form-control" name = "Group-Size" id="search-size" placeholder="" value="" required>
+          <input type="number" class="form-control" name = "Group-Size" id="search-size" placeholder="" value="" >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="search-commits" class="col-sm-2 control-label">No. of Commitments:</label>
+        <div class="col-sm-10">
+          <input type="number" class="form-control" name = "Date" id="search-commits" placeholder="" value="" >
         </div>
       </div>
 
@@ -89,6 +110,7 @@
           -->
 
           <button id="updateForm" type="submit" class="btn btn-success">Update</button>
+          <button id="goToMaps" type="button" class="btn btn-success">Go to Maps</button>
         </div>
       </div>
 
@@ -107,6 +129,7 @@
 <script>
 
 
+/*
 
 $(function() {
     $('#getLocation').click(function() {
@@ -132,20 +155,44 @@ $(function() {
     });
 });
 
+*/
 
 
 $(document).ready(function (){
+
+
+  /*
 
   if (localStorage.latitude && localStorage.longitude) {
     $('#search-lat').val(localStorage.latitude);
     $('#search-long').val(localStorage.longitude);
   }
 
-  var latitude = localStorage.latitude || 51.505;
-  var longitude = localStorage.longitude || -0.09;
+  */
+
+  $('#search-event').val(details.title);
+  $('#search-host').val(details.host);
+  $('#search-location').val(details.location_name);
+  $('#search-date').val(details.date);
+  $('#search-start').val(details.start_time);
+  $('#search-end').val(details.end_time);
+  $('#search-type').val(details.activity_type);
+  $('#search-size').val(details.group_size);
+  $('#search-active').val(details.active);
+  $('#search-address').val(details.formatted_address);
+
+  //var latitude = localStorage.latitude || 51.505;
+  //var longitude = localStorage.longitude || -0.09;
+  
+  var eventLatitude = details.location.coordinates[1];
+  var eventLongitude = details.location.coordinates[0];
+
+  window.mapsUrl = details.url;
+
+
   // initialize the map on the "map" div with a given center and zoom
   window.mymap = L.map('map', {
-      center: [latitude, longitude],
+      center: [eventlatitude, eventlongitude],
       zoom: 13
   });
 
@@ -162,6 +209,16 @@ $(document).ready(function (){
 
               //.bindPopup('Current Location')
               //.openPopup();
+
+
+
+  $(function() {
+    $('#goToMaps').click(function() {
+        //console.log("$('form').serialize(): ",$('form').serialize());
+        
+        window.location.href = mapsUrl;
+    });
+  });
 
 
   //Creating a JSON object to send form data to Server
