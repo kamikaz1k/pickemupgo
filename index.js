@@ -10,6 +10,8 @@ var database = {}; // Global reference to the DB
 var passport = require('passport');
 // console.log(passport);
 
+var creds = require("./creds").mongodb;
+var mongoURI = process.env.MONGODB_URI || creds; 
 // Connect to the db
 MongoClient.connect(mongoURI, function(error, db) {
     // Get reference to DB
@@ -33,6 +35,10 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
+
+app.get("/", function (request, response) {
+    response.render("pages/home");
+});
 
 app.get('/new_event', function (request, response) {
     // if (request.query.entry) {
