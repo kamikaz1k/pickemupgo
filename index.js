@@ -9,7 +9,7 @@ var database = {}; // Global reference to the DB
 
 var passport = require('passport');
 // console.log(passport);
- 
+
 // Connect to the db
 MongoClient.connect(mongoURI, function(error, db) {
     // Get reference to DB
@@ -27,13 +27,76 @@ app.set('port', (process.env.PORT || 5000));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+// To parse the form information
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+app.use(bodyParser.json());
+
 app.get('/new_event', function (request, response) {
     // if (request.query.entry) {
     console.log("new_event");
     response.render("pages/testform");
 });
 
+app.post("/new_event", function (request, response) {
+    // if (request.query.entry) {
+    console.log("### new_event", request.body);
+
+    var eventObj = new EventEntry(request.body);
+
+    console.log("saving object to FBs!", eventObj);
+    
+    // Ensure there is atleast one entry, and that it has a pokemon ID and location info
+    if (eventObj) {
+        database.collection('eventEntry')
+            .insert(eventObj, function(error, result) { 
+                if (error) { 
+                    console.log("### Insertion ERROR result:", error); 
+                    response.send({ error: error});
+                } else {
+                    console.log("### Post insert result:", result); 
+                    // response.send({ message: "Entered find", data: result });1
+                    console.log("## REDIRECTING", result.ops[0]);
+                    response.redirect("/event_page/" + result.ops[0]._id);
+                    // response.redirect("/event/" + result.ops[0]._id);
+                }
+            });
+        
+    } else {
+        console.log("### Incorrect:", eventObj);
+        response.status(400).send({ error: "Bad Request :: new Entry invalid" });
+    }
+
+});
+
 app.get("/event_page/:eventId", function (request, response) {
+
+    var options = {};
+    options._id = ObjectID(request.params.eventId);
+
+    console.log("options",options);
+
+    database.collection('eventEntry')
+        .find(options).toArray(function (error, items) {
+            if (!error) {
+                // response.render('pages/dump', { items: items }); 
+                // response.send({ message: "Dump of collection: Test", data: items }); 
+                var details = { 
+                    title: items[0].title, 
+                    eventDetails: items[0], 
+                    eventId: items[0]._id 
+                };
+                response.render("pages/event_details", details);
+            } else {
+                console.error("Dump Error:", error);
+                response.status(500).send({ error: 'DUMP FAILED' });
+            }
+        });
+});
+
+app.get("/event/:eventId", function (request, response) {
 
     var options = {};
     options._id = ObjectID(request.params.eventId);
@@ -43,8 +106,8 @@ app.get("/event_page/:eventId", function (request, response) {
     database.collection('eventEntry')
         .find(options).toArray(function (error, items) {
             if (!error) {
-                // response.render('pages/dump', { items: items }); 
-                response.send({ message: "Dump of collection: Test", data: items }); 
+                console.log("SUCCESS", items);
+                response.send(items[0]);
             } else {
                 console.error("Dump Error:", error);
                 response.status(500).send({ error: 'DUMP FAILED' });
@@ -52,10 +115,42 @@ app.get("/event_page/:eventId", function (request, response) {
         });
 });
 
-app.delete("/event/:eventId", function (request, response) {
+app.post("/event/:eventId", function (request, response) {
     // Check if event belongs to the user
-    console.log("Deleteing ", request.params.eventId);
-    
+
+    var options = {};
+
+    if (!request.params.eventId) {
+        response.status(400).send({ error: "Invalid Query" });
+        return;
+    }
+
+    options._id = ObjectID(request.params.eventId);
+    options.justOne = true;
+
+    var updateOptions = {};
+
+    if (request.query.active == false) { 
+        console.log("request.query",request.query);
+        updateOptions.$set = { "active": false } 
+    }
+
+    console.log("Deleteing ", request.params.eventId, options);
+    database.collection('restaurants')
+    .updateOne(options,
+        updateOptions,
+        function (error, results) {
+            console.log(results);
+            if (!error) {
+                console.log("Deleted", results); 
+                response.send({ message: "Update successful", data: results[0] }); 
+            } else {
+                console.log("ERROR DELETING", options._id, error); 
+                response.send({ error: error });
+            }
+        }
+   );
+
 });
 
 app.get("/signup", function (request, response) {
@@ -108,46 +203,8 @@ app.get('/search', function (request, response) {
 
 });
 
-// To parse the form information
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-
-app.use(bodyParser.json());
-
 app.post("/create_user", function (request, response) {
     console.log("request.body",request.body);
-});
-
-app.post("/new_event", function (request, response) {
-    // if (request.query.entry) {
-    console.log("### new_event", request.body);
-
-    var eventObj = new EventEntry(request.body);
-
-    console.log("saving object to FBs!", eventObj);
-    
-    // Ensure there is atleast one entry, and that it has a pokemon ID and location info
-    if (eventObj) {
-        database.collection('eventEntry')
-            .insert(eventObj, function(error, result) { 
-                if (error) { 
-                    console.log("### Insertion ERROR result:", error); 
-                } else {
-                    console.log("### Post insert result:", result); 
-                }
-            });
-
-        response.send({ message: "Entered find"});
-        
-    } else {
-        console.log("### Incorrect:", eventObj);
-        response.status(400).send({ error: "Bad Request :: new Entry invalid" });
-    }
-
-    // response.send({ orig: request.body, processed: eventObj });
-    response.render("pages/test", { response: eventObj, title: "New Event Object" });
-
 });
 
 function EventEntry (options) {
