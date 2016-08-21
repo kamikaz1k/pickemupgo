@@ -14,13 +14,6 @@
   	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body>
-	<div class="container">
-    	<h1>Welcome to Pick Up!</h1>
-    	<h2>Search Listings</h2>
-
-
-</body>
 		<!--
 			
 			Create form that - 
@@ -30,8 +23,97 @@
 
 		-->
 
+<body>
+	<div class="container">
+    	<h1>Welcome to Pick Up!</h1>
+    	<h2>Search Listings</h2>
 
 
+    <div>
+	    <form class="form-horizontal" action="/search_results" method="get">
+
+	      
+
+	      <div class="form-group">
+	        <label for="search-long" class="col-sm-2 control-label">Longitude:</label>
+	        <div class="col-sm-10">
+	          <input type="text" class="form-control" name="longitude" id="search-long" placeholder="Long: 43.6532" value="43.6532"  required>
+	        </div>
+	      </div>
+
+	      <div class="form-group">
+	        <label for="search-lat" class="col-sm-2 control-label">Latitude:</label>
+	        <div class="col-sm-10">
+	          <input type="text" class="form-control" name="latitude" id="search-lat" placeholder="Lat: 79.3832" value="79.3832"  required>
+	        </div>
+	      </div>
+
+	      <div class="form-group">
+        	<label for="search-radius" class="col-sm-2 control-label">Search Radius:</label>
+        	<div class="col-sm-10">
+          		<input type="number" class="form-control" name="search_radius" id="search-radius" placeholder="in miles" value="" required>
+        	</div>
+      	  </div>
+
+	      
+
+	      <div class="form-group">
+        	<div class="col-sm-offset-2 col-sm-10">
+        	<button id="getLocation" type="button" class="btn btn-default">Get Location</button>
+
+         	<button id="submitForm" type="submit" class="btn btn-success">Submit</button>
+        	</div>
+      	  </div>
+
+    	</form>
+
+  	</div>
+	</div>
+
+
+</body>
+
+<script>
+
+$(function() {
+    $('#getLocation').click(function() {
+        //console.log("$('form').serialize(): ",$('form').serialize());
+        navigator.geolocation.getCurrentPosition(function (geoObj) {
+          if (L) {            
+            var latLong = {
+              lat: geoObj.coords.latitude,
+              lon: geoObj.coords.longitude
+            }
+            // console.log("Coord Setting:", coords, latLong);
+            //mymap.panTo(latLong);
+            $('#search-lat').val(geoObj.coords.latitude);
+            $('#search-long').val(geoObj.coords.longitude);
+
+            localStorage.latitude = geoObj.coords.latitude;
+            localStorage.longitude = geoObj.coords.longitude;
+
+            //marker1.setLatLng([localStorage.latitude, localStorage.longitude]);
+
+          }
+        });
+    });
+});
+
+$(document).ready(function (){
+
+  if (localStorage.latitude && localStorage.longitude) {
+    $('#search-lat').val(localStorage.latitude);
+    $('#search-long').val(localStorage.longitude);
+  }
+});
+
+
+
+
+
+
+</script>
+	
 
 
 </html>
