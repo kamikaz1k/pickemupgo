@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pick Up!</title>
+  <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <!-- Leaflet Scripts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+  <!-- Leaflet End -->
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Welcome to Pick Up!</h1>
+
+    <h2>View Event</h2>
+
+
+  <div>
+    <form class="form-horizontal">
+
+      <div class="form-group">
+        <label for="search-event" class="col-sm-2 control-label">Event:</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name = "Event" id="search-event" placeholder="" value="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="search-host" class="col-sm-2 control-label">Host:</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name = "Host" id="search-host" placeholder="" value="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="search-location" class="col-sm-2 control-label">Location:</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name = "Location" id="search-location" placeholder="" value="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="search-date" class="col-sm-2 control-label">Date:</label>
+        <div class="col-sm-10">
+          <input type="date" class="form-control" name = "Date" id="search-date" placeholder="" value="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="search-start" class="col-sm-2 control-label">Start Time:</label>
+        <div class="col-sm-10">
+          <input type="time" class="form-control" name = "Start-Time" id="search-start" placeholder="" value="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="search-end" class="col-sm-2 control-label">End Time:</label>
+        <div class="col-sm-10">
+          <input type="time" class="form-control" name = "End-Time" id="search-end" placeholder="" value="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="search-type" class="col-sm-2 control-label">Event Type:</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name = "Event-Type" id="search-type" placeholder="" value="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="search-size" class="col-sm-2 control-label">Group Size:</label>
+        <div class="col-sm-10">
+          <input type="number" class="form-control" name = "Group-Size" id="search-size" placeholder="" value="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+
+          <!--
+          <button id="getLocation" type="button" class="btn btn-default">Get Location</button>
+          -->
+
+          <button id="updateForm" type="submit" class="btn btn-success">Update</button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<br>
+
+<div class="container">
+  <div id="map" style="height: 220px;"></div>
+</div>
+
+</body>
+<script>
+
+
+
+$(function() {
+    $('#getLocation').click(function() {
+        //console.log("$('form').serialize(): ",$('form').serialize());
+        navigator.geolocation.getCurrentPosition(function (geoObj) {
+          if (L) {            
+            var latLong = {
+              lat: geoObj.coords.latitude,
+              lon: geoObj.coords.longitude
+            }
+            // console.log("Coord Setting:", coords, latLong);
+            mymap.panTo(latLong);
+            $('#search-lat').val(geoObj.coords.latitude);
+            $('#search-long').val(geoObj.coords.longitude);
+
+            localStorage.latitude = geoObj.coords.latitude;
+            localStorage.longitude = geoObj.coords.longitude;
+
+            marker1.setLatLng([localStorage.latitude, localStorage.longitude]);
+
+          }
+        });
+    });
+});
+
+
+
+$(document).ready(function (){
+
+  if (localStorage.latitude && localStorage.longitude) {
+    $('#search-lat').val(localStorage.latitude);
+    $('#search-long').val(localStorage.longitude);
+  }
+
+  var latitude = localStorage.latitude || 51.505;
+  var longitude = localStorage.longitude || -0.09;
+  // initialize the map on the "map" div with a given center and zoom
+  window.mymap = L.map('map', {
+      center: [latitude, longitude],
+      zoom: 13
+  });
+
+  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox.streets',
+    accessToken: 'pk.eyJ1Ijoia2FtaWthejFrIiwiYSI6ImNpcWgyNzd2czA0bXRmeW5wdDJrdDA0b2YifQ.EhJNxc3CbcdkQMR8QdbFAA'
+  }).addTo(mymap);
+
+  // Add marker to map at current location
+  window.marker1 = L.marker([latitude, longitude]);
+              marker1.addTo(mymap);
+
+              //.bindPopup('Current Location')
+              //.openPopup();
+
+
+  //Creating a JSON object to send form data to Server
+  (function () {
+    $.fn.serializeFormJSON = function () {
+
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+
+        //Add place JSON and latlng
+        o["Place"] = place;
+        o["Latitude"] = finalLatitude;
+        o["Longitude"] = finalLongitude;
+
+        return o;
+    };
+  })();
+
+  $('form').submit(function (e) {
+      e.preventDefault();
+      var data = $(this).serializeFormJSON();
+      console.log(data);
+
+      /* Object
+          email: "value"
+          name: "value"
+          password: "value"
+       */
+  });
+
+
+});
+
+
+
+var placeSearch, autocomplete;
+
+function initAutocomplete() {
+      // Create the autocomplete object, restricting the search to geographical
+      // location types.
+      autocomplete = new google.maps.places.Autocomplete(
+          /** @type {!HTMLInputElement} */(document.getElementById('search-location')),
+          {types: []});
+
+      // When the user selects an address from the dropdown, populate the address
+      // fields in the form.
+      autocomplete.addListener('place_changed', fillInAddress);
+
+      //place contains all the information of the selected location
+      
+
+    }
+
+function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        window.place = autocomplete.getPlace();
+        //console.log(place);
+        var geoLocation = place.geometry.location;
+        //console.log(geoLocation);
+        window.finalLatitude = geoLocation.lat();
+        window.finalLongitude = geoLocation.lng();
+        marker1.setLatLng([finalLatitude, finalLongitude]);
+}    
+
+// Bias the autocomplete object to the user's geographical location,
+// as supplied by the browser's 'navigator.geolocation' object.
+function geolocate() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var geolocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          var circle = new google.maps.Circle({
+            center: geolocation,
+            radius: position.coords.accuracy
+          });
+          autocomplete.setBounds(circle.getBounds());
+        });
+      }
+    }
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBm7WomiYWSp91pKjHzgw-Z3MA4elcqM7w&libraries=places&callback=initAutocomplete"
+        async defer></script>
+</html>
