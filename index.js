@@ -10,8 +10,6 @@ var database = {}; // Global reference to the DB
 var passport = require('passport');
 // console.log(passport);
 
-var mongoURI = process.env.MONGODB_URI || "mongodb://mainadmin:mainadmin@ds013216.mlab.com:13216/local-pickup"; 
-
 // Connect to the db
 MongoClient.connect(mongoURI, function(error, db) {
     // Get reference to DB
@@ -61,7 +59,8 @@ app.post("/new_event", function (request, response) {
                     console.log("### Post insert result:", result); 
                     // response.send({ message: "Entered find", data: result });1
                     console.log("## REDIRECTING", result.ops[0]);
-                    response.redirect("/event_page/" + result.ops[0]._id);
+                    response.send({ url: "/event_page/" + result.ops[0]._id });
+                    // response.redirect("/event_page/" + result.ops[0]._id);
                     // response.redirect("/event/" + result.ops[0]._id);
                 }
             });
@@ -190,7 +189,8 @@ app.get("/search_results", function (request, response) {
     var options = {};
 
     if (request.query.latitude && request.query.longitude) {
-        var range = request.query.range || 5;
+        var range = parseInt(request.query.range, 10) || 5;
+        console.log("range", range);
 
         options.location = { 
             $geoWithin: { 
@@ -253,17 +253,38 @@ app.post("/create_user", function (request, response) {
 
 function EventEntry (options) {
     // @TODO Figure out lat long logic
-    var longitude = -0.09, latitude = 51.505;
+    // var longitude = -0.09, latitude = 51.505;
 
+    // Title of the Event
     this.title = options.title ? options.title : "";
+    // Who is hosting the event
     this.host = options.host ? options.host : "";
-    this.address = options.address ? options.address : ""; 
+    // The Name of the location
+    this.location_name = options.location_name ? options.location_name : ""; 
+    // The proper address of the location
+    this.formatted_address = options.formatted_address ? options.formatted_address : ""; 
+    // Google maps url to location
+    this.url = options.url ? options.url : ""; 
+    // Is the event active?
     this.active = options.active ? options.active : "true"; 
-    this.location = { type: "Point", coordinates: [ parseFloat(longitude), parseFloat(latitude) ] };
-    this.start = options.start ? options.start : "";
-    this.end = options.end ? options.end : "";
-    this.activityType = options.activityType ? options.activityType : "";
-    this.groupSize = options.groupSize ? options.groupSize : "";
+    // The date it is happening
+    this.date = options.date ? options.date : ""; 
+    // The starting time of the event
+    this.start_time = options.start_time ? options.start_time : "";
+    // The ending time of the event
+    this.end_time = options.end_time ? options.end_time : "";
+    // The type of activity
+    this.activity_type = options.activity_type ? options.activity_type : "";
+    // Number of people the organizer is looking for
+    this.group_size = options.group_size ? parseInt(options.group_size, 10) : 0;
+    // Current committments to actually come
+    this.people_committed = options.people_committed ? parseInt(options.people_committed, 10) : 0;
+
+    // location coordinate stuff
+    if (options.latitude && options.longitude)
+        this.location = { 
+            type: "Point", 
+            coordinates: [ parseFloat(options.longitude), parseFloat(options.latitude) ] };
 }
 
 app.listen(app.get('port'), function() {
