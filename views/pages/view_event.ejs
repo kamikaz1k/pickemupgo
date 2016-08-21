@@ -113,6 +113,10 @@
         </div>
       </div>
 
+      <input type="hidden" id="latitude" value="<%=eventDetails.location.coordinates[1]%>">
+      <input type="hidden" id="longitude" value="<%=eventDetails.location.coordinates[0]%>">
+      <a href="<%=eventDetails.url%>"><%=eventDetails.url%></a>
+
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
 
@@ -188,8 +192,10 @@ $(document).ready(function (){
   //var latitude = localStorage.latitude || 51.505;
   //var longitude = localStorage.longitude || -0.09;
 
-  var eventLatitude = eventDetails.location.coordinates[1];
-  var eventLongitude = eventDetails.location.coordinates[0];
+  window.eventLatitude = $("#latitude").val();
+  window.eventLongitude = $("#longitude").val();
+
+  console.log("COORDS", eventLatitude, eventLongitude);
 
 
 
@@ -236,7 +242,7 @@ $(document).ready(function (){
 
   $(function() {
     $('#goToMaps').click(function() {
-        window.location.href = eventDetails.url; 
+        window.location.href = $("#map-url").val(); 
     });
   });
 
