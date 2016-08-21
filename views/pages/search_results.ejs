@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Search Listings</title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+  </head>
+ 
+  <body>
+ 
+    <div class="container">
+ 
+      <div class="jumbotron">
+        <ul class="list-group">
+          <li class="list-group-item"><a href="/new_event">Create Event</a></li>
+          <!-- <li class="list-group-item">Second item</li> -->
+
+          <% for(var i = 0; i < events.length; i++) {%>
+            <li class="list-group-item" onclick="openEventPage('<%= events[i]["_id"] %>')">
+              <p><%= events[i].title %></p>
+            </li>
+          <% } %>
+
+          <%if (events.length === 0) { %>
+          <li class="list-group-item">No entries for this search...</li>
+          <% } %>
+        </ul>
+      </div>
+ 
+      <footer class="footer">
+        <p>&copy; Company 2016</p>
+      </footer>
+ 
+    </div>
+  </body>
+  <script>
+  function openEventPage (eventId) {
+    console.log("Event ID", eventId);
+    window.location.href = ("/event_page/" + eventId);
+  }
+
+  function getCoordinates () {
+    navigator.geolocation.getCurrentPosition(function (geoObj) {
+      console.log("Coord Setting:", geoObj);
+      document.getElementById("locationPref").value = geoObj.coords.latitude + "::" + geoObj.coords.longitude;
+    });
+  };
+  </script>
+</html>

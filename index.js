@@ -185,6 +185,36 @@ app.get("/find_events", function (request, response) {
     response.render("pages/search_listings");
 });
 
+app.get("/search_results", function (request, response) {
+
+    var options = {};
+
+    if (request.query.latitude && request.query.longitude) {
+        var range = request.query.range || 5;
+
+        options.location = { 
+            $geoWithin: { 
+                $centerSphere: [ 
+                    [ parseFloat(request.query.longitude), parseFloat(request.query.latitude) ], 
+                    range / 3963.2 // range is in miles -- convert to ...something
+                ] 
+            } 
+        }
+
+    }
+
+    database.collection('eventEntry')
+    .find(options).toArray(function (error, items) {
+        if (!error) {
+            // response.render('pages/dump', { items: items }); 
+            response.render("pages/search_results", { events: items });
+        } else {
+            console.error("Dump Error:", error);
+            response.status(500).send({ error: 'DUMP FAILED' });
+        }
+    });
+});
+
 app.get('/search', function (request, response) {
 
     var options = {};
