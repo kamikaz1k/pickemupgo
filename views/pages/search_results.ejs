@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <title>Search Listings</title>
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+
+    <% include ../partials/common_styles.ejs %>
+
   </head>
  
   <body>
@@ -11,31 +12,83 @@
     <% include ../partials/navbar.ejs %>
  
     <div class="container">
- 
-      <div class="jumbotron">
-        <ul class="list-group">
-          <li class="list-group-item"><a href="/new_event">Create Event</a></li>
-          <!-- <li class="list-group-item">Second item</li> -->
 
-          <% for(var i = 0; i < events.length; i++) {%>
-            <li class="list-group-item" onclick="openEventPage('<%= events[i]["_id"] %>')">
-              <p><%= events[i].title %></p> Hosted by 
-            </li>
-          <% } %>
+      <div class="list-group">
 
-          <%if (events.length === 0) { %>
-          <li class="list-group-item">No entries for this search...</li>
+        <% for(var i = 0; i < events.length; i++) {%>
+        <a href="<%= "/event_page/" + events[i]["_id"] %>" class="list-group-item">
+
+          <%if (events[i].activity_type) { %>
+            <span class="pull-right badge" style="padding-top: 5px">
+              <%= events[i].activity_type %>
+            </span>
           <% } %>
-        </ul>
+          <h4 class="list-group-item-heading">"<%= events[i].title ? events[i].title : "No Title" %>"</h4>
+          <span class="pull-right">
+            <%= events[i].date && events[i].end_time ? events[i].date + " " + events[i].end_time : "Unspecified..." %>
+          </span>
+          <p class="list-group-item-text">Hosted by <%= events[i].host ? events[i].host : "Anonymous" %></p>
+
+        </a>
+        <% } %>
+
+        <%if (events.length === 0) { %>
+        <li class="list-group-item">No entries for this search...</li>
+        <% } %>
+
+        <a href="/new_event" class="list-group-item" onclick="openCreatePage()">
+          <p>Don't see anything you like?</p>
+          <h4 class="list-group-item-heading">Create a new Event!</h4>
+        </a>
+
       </div>
- 
+
+      <!-- <ul class="list-group">
+
+        <% for(var i = 0; i < events.length; i++) {%>
+          <li class="list-group-item" onclick="openEventPage('<%= events[i]["_id"] %>')">
+
+
+          <%if (events[i].activity_type) { %>
+            <span class="pull-right badge" style="padding-top: 5px">
+              <%= events[i].activity_type %>
+            </span>
+          <% } %>
+
+            <p>"<%= events[i].title ? events[i].title : "No Title" %>"</p>
+            Hosted by <%= events[i].host ? events[i].host : "Anonymous" %>
+
+            <span class="pull-right">
+              <%= events[i].date && events[i].end_time ? events[i].date + " " + events[i].end_time : "Unspecified..." %>
+            </span>
+
+          </li>
+        <% } %>
+
+        <li class="list-group-item" onclick="openCreatePage()">
+          <p>Don't see anything you like?</p>
+          <a href="/new_event">Create Event</a>
+        </li>
+
+        <%if (events.length === 0) { %>
+        <li class="list-group-item">No entries for this search...</li>
+        <% } %>
+
+      </ul> -->
+    </div>
+    
+    <div class="container">
       <footer class="footer">
         <p>&copy; Company 2016</p>
       </footer>
- 
     </div>
+
   </body>
   <script>
+  function openCreatePage () {
+    window.location.href = ("/new_event");
+  }
+
   function openEventPage (eventId) {
     console.log("Event ID", eventId);
     window.location.href = ("/event_page/" + eventId);
