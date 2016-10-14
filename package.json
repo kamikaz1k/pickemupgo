@@ -10,13 +10,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt-nodejs": "latest",
     "body-parser": "^1.15.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
     "ejs": "^2.5.1",
     "express": "^4.14.0",
-    "firebase": "^3.3.0",
-    "indico.io": "^0.10.2",
+    "express-session": "^1.14.1",
     "mongodb": "^2.2.7",
+    "mongoose": "~3.8.1",
+    "morgan": "^1.7.0",
     "passport": "^0.3.2",
-    "ws": "^1.1.1"
+    "passport-facebook": "~1.0.2",
+    "passport-google-oauth": "~0.1.5",
+    "passport-local": "~0.1.6",
+    "passport-twitter": "~1.0.2"
   }
 }
