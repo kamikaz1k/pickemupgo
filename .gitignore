@@ -1,3 +1,4 @@
+config/auth.js
 node_modules/
 .DS_Store
 creds.js
