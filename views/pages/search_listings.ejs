@@ -11,15 +11,6 @@
 
 </head>
 
-		<!--
-			
-			Create form that - 
-			1. Create a button for locate me and save location
-			2. Number input for search radius
-			3. Submit
-
-		-->
-
 <body>
 
   <% include ../partials/navbar.ejs %>
@@ -29,9 +20,8 @@
     <h2>Search for Events</h2>
 
     <div>
-	    <form class="form-horizontal" action="/search_results" method="get">
 
-	      
+	    <form class="form-horizontal" action="/events/search" method="get">
 
 	      <div class="form-group">
 	        <label for="search-long" class="col-sm-2 control-label">Longitude:</label>
@@ -52,67 +42,55 @@
         	<div class="col-sm-10">
           		<input type="number" class="form-control" name="range" id="search-radius" placeholder="in miles" value="" required>
         	</div>
-      	  </div>
-
-	      
+      	</div>
 
 	      <div class="form-group">
         	<div class="col-sm-offset-2 col-sm-10">
-        	<button id="getLocation" type="button" class="btn btn-default">Get Location</button>
-
-         	<button id="submitForm" type="submit" class="btn btn-success">Submit</button>
+          	<button id="getLocation" type="button" class="btn btn-default">Get Location</button>
+           	<button id="submitForm" type="submit" class="btn btn-success">Submit</button>
         	</div>
-      	  </div>
+      	 </div>
 
     	</form>
 
   	</div>
-	</div>
 
+	</div>
 
 </body>
 
 <script>
+  $(function() {
+      $('#getLocation').click(function() {
+          //console.log("$('form').serialize(): ",$('form').serialize());
+          navigator.geolocation.getCurrentPosition(function (geoObj) {
+            if (L) {            
+              var latLong = {
+                lat: geoObj.coords.latitude,
+                lon: geoObj.coords.longitude
+              }
+              // console.log("Coord Setting:", coords, latLong);
+              //mymap.panTo(latLong);
+              $('#search-lat').val(geoObj.coords.latitude);
+              $('#search-long').val(geoObj.coords.longitude);
 
-$(function() {
-    $('#getLocation').click(function() {
-        //console.log("$('form').serialize(): ",$('form').serialize());
-        navigator.geolocation.getCurrentPosition(function (geoObj) {
-          if (L) {            
-            var latLong = {
-              lat: geoObj.coords.latitude,
-              lon: geoObj.coords.longitude
+              localStorage.latitude = geoObj.coords.latitude;
+              localStorage.longitude = geoObj.coords.longitude;
+
+              //marker1.setLatLng([localStorage.latitude, localStorage.longitude]);
+
             }
-            // console.log("Coord Setting:", coords, latLong);
-            //mymap.panTo(latLong);
-            $('#search-lat').val(geoObj.coords.latitude);
-            $('#search-long').val(geoObj.coords.longitude);
+          });
+      });
+  });
 
-            localStorage.latitude = geoObj.coords.latitude;
-            localStorage.longitude = geoObj.coords.longitude;
+  $(document).ready(function (){
 
-            //marker1.setLatLng([localStorage.latitude, localStorage.longitude]);
-
-          }
-        });
-    });
-});
-
-$(document).ready(function (){
-
-  if (localStorage.latitude && localStorage.longitude) {
-    $('#search-lat').val(localStorage.latitude);
-    $('#search-long').val(localStorage.longitude);
-  }
-});
-
-
-
-
-
-
+    if (localStorage.latitude && localStorage.longitude) {
+      $('#search-lat').val(localStorage.latitude);
+      $('#search-long').val(localStorage.longitude);
+    }
+  });
 </script>
-	
-
 
 </html>

@@ -153,23 +153,13 @@ $(function() {
 
 $(document).ready(function (){
 
-  
-
   if (localStorage.latitude && localStorage.longitude) {
     $('#search-lat').val(localStorage.latitude);
     $('#search-long').val(localStorage.longitude);
   }
 
-  
-
-
-
   var latitude = localStorage.latitude || 51.505;
   var longitude = localStorage.longitude || -0.09;
-
-
-
-
 
   // initialize the map on the "map" div with a given center and zoom
   window.mymap = L.map('map', {
@@ -186,10 +176,10 @@ $(document).ready(function (){
 
   // Add marker to map at current location
   window.marker1 = L.marker([latitude, longitude]);
-              marker1.addTo(mymap);
+  marker1.addTo(mymap);
 
-              //.bindPopup('Current Location')
-              //.openPopup();
+  //.bindPopup('Current Location')
+  //.openPopup();
 
   /*
   mymap.on('click', onMapClick);
@@ -209,8 +199,6 @@ $(document).ready(function (){
 
   }
   */
-
-
 
   //Creating a JSON object to send form data to Server
   (function () {
@@ -245,7 +233,7 @@ $(document).ready(function (){
       var data = $(this).serializeFormJSON();
       console.log(data);
       $.ajax({
-          url: '/new_event',
+          url: '/events/new',
           data: data,
           type: 'POST',
           success: function(response) {
@@ -267,58 +255,57 @@ $(document).ready(function (){
 
 });
 
-
-
 var placeSearch, autocomplete;
 
 function initAutocomplete() {
-      // Create the autocomplete object, restricting the search to geographical
-      // location types.
-      autocomplete = new google.maps.places.Autocomplete(
-          /** @type {!HTMLInputElement} */(document.getElementById('search-location')),
-          {types: []});
+  // Create the autocomplete object, restricting the search to geographical
+  // location types.
+  autocomplete = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('search-location')),
+      {types: []});
 
-      // When the user selects an address from the dropdown, populate the address
-      // fields in the form.
-      autocomplete.addListener('place_changed', fillInAddress);
+  // When the user selects an address from the dropdown, populate the address
+  // fields in the form.
+  autocomplete.addListener('place_changed', fillInAddress);
 
-      //place contains all the information of the selected location
-      
+  //place contains all the information of the selected location
+  
 
-    }
+}
 
 function fillInAddress() {
   console.log("fillInAddress");
-        // Get the place details from the autocomplete object.
-        window.place = autocomplete.getPlace();
-        console.log(place);
-        var geoLocation = place.geometry.location;
-        //console.log(geoLocation);
-        window.finalLatitude = geoLocation.lat();
-        window.finalLongitude = geoLocation.lng();
-        marker1.setLatLng([finalLatitude, finalLongitude]);
+  // Get the place details from the autocomplete object.
+  window.place = autocomplete.getPlace();
+  console.log(place);
+  var geoLocation = place.geometry.location;
+  //console.log(geoLocation);
+  window.finalLatitude = geoLocation.lat();
+  window.finalLongitude = geoLocation.lng();
+  marker1.setLatLng([finalLatitude, finalLongitude]);
+  mymap.panTo([finalLatitude, finalLongitude]);
 }    
 
 // Bias the autocomplete object to the user's geographical location,
 // as supplied by the browser's 'navigator.geolocation' object.
 function geolocate() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          var geolocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          var circle = new google.maps.Circle({
-            center: geolocation,
-            radius: position.coords.accuracy
-          });
-          autocomplete.setBounds(circle.getBounds());
-        });
-      }
-    }
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var geolocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      var circle = new google.maps.Circle({
+        center: geolocation,
+        radius: position.coords.accuracy
+      });
+      autocomplete.setBounds(circle.getBounds());
+    });
+  }
+}
 
 </script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBm7WomiYWSp91pKjHzgw-Z3MA4elcqM7w&libraries=places&callback=initAutocomplete"
+  <!-- This so that the initAutocomplete is defined when the script is loaded  -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBm7WomiYWSp91pKjHzgw-Z3MA4elcqM7w&libraries=places&callback=initAutocomplete"
         async defer></script>
 </html>

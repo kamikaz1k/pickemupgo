@@ -1,11 +1,12 @@
 // routes.js
+var EventEntry = require('./models/eventEntry');
+
 module.exports = function (app, passport) {
 
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
     app.get('/', function (req, res) {
-        // res.render('index.ejs'); // load the index.ejs file
         res.render('pages/home');
     });
 
@@ -14,7 +15,6 @@ module.exports = function (app, passport) {
     // =====================================
     // show the login form
     app.get('/login', function (req, res) {
-
         // render the page and pass in any flash data if it exists
         res.render('pages/login.ejs', { message: req.flash('loginMessage') }); 
     });
@@ -25,9 +25,6 @@ module.exports = function (app, passport) {
         failureRedirect : '/login', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
     }));
-
-    // process the login form
-    // app.post('/login', do all our passport stuff here);
 
     // =====================================
     // SIGNUP ==============================
@@ -68,6 +65,130 @@ module.exports = function (app, passport) {
     app.get('/profile', isLoggedIn, function (req, res) {
         res.render('pages/profile.ejs', {
             user : req.user // get the user out of session and pass to template
+        });
+    });
+
+    // =====================================
+    // SEARCH RESULTS ======================
+    // =====================================
+    app.get("/events/search", function (req, res) {
+        console.log("### SEARCH");
+        var options = {}, range = 5;
+
+        if (req.query.latitude && req.query.longitude && req.query.range) {
+
+            range = parseInt(req.query.range, 10) || range; // Check for NaN
+
+            options.location = { 
+                $geoWithin: { 
+                    $centerSphere: [ 
+                        [
+                            parseFloat(req.query.longitude),
+                            parseFloat(req.query.latitude)
+                        ], 
+                        range / 3963.2 // range is in miles -- convert to ...something
+                    ] 
+                } 
+            }
+
+        } else {
+            res.status(400).send({
+                error: "Invalid Search Params",
+                msg: "Need to give latitude and longitude"
+            });
+        }
+
+        EventEntry.find(options, function (error, items) {
+            if (!error) {
+                res.render("pages/search_results", { events: items });
+            } else {
+                res.status(500).send({
+                    error: error,
+                    msg: "SEARCH FAILED"
+                });
+            }
+        });
+
+    });
+
+    // =====================================
+    // SEARCH FORM =========================
+    // =====================================
+    app.get("/events/find", function (req, res) {
+        res.render("pages/search_listings");
+    });
+
+    // =====================================
+    // NEW EVENT FORM ======================
+    // =====================================
+    app.get("/events/new", function (req, res) {
+        res.render("pages/create_event");
+    });
+
+    // =====================================
+    // CREATE EVENT ========================
+    // =====================================
+    app.post("/events/new", function (req, res) {
+
+        var eventObj = new EventEntry();
+        req.body.host = req.user;
+        eventObj.populateDetails(req.body);
+
+        eventObj.save(function (err, result) {
+            if (!err) {
+                // console.log("### Post insert result:", result); 
+                res.send({ url: "/events/" + result._id });
+            }
+            else {
+                // console.log("### Insertion ERROR result:", err); 
+                res.send({ error: err });
+            }
+        });
+    });
+
+    // =====================================
+    // EVENT DETAILS =======================
+    // =====================================
+    app.get("/events/:eventId", function (req, res) {
+
+        EventEntry.findById(req.params.eventId, function (error, item) {
+            if (!error) {
+                // console.log("### query result", item);
+                res.render("pages/view_event", {
+                    title: item.title,
+                    eventDetails: item,
+                    eventId: item._id
+                });
+            } else {
+                // console.error("Dump Error:", error);
+                res.status(500).send({
+                    error: error,
+                    msg: "SEARCH FAILED"
+                });
+            }
+        });
+    });
+
+    // =====================================
+    // EVENT DETAILS UPDATE ================
+    // =====================================
+    app.post("/events/:eventId", function (req, res) {
+
+        EventEntry.findById(req.params.eventId, function (error, item) {
+            if (!error) {
+                // console.log("### query result", item);
+                res.render("pages/view_event", {
+                    title: item.title,
+                    eventDetails: item,
+                    eventId: item._id
+                });
+            } else {
+                // console.error("Dump Error:", error);
+                res.status(500).send({
+                    error: error,
+                    msg: "SEARCH FAILED"
+                });
+            }
         });
     });
 

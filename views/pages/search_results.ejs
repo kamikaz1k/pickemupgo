@@ -16,7 +16,7 @@
       <div class="list-group">
 
         <% for(var i = 0; i < events.length; i++) {%>
-        <a href="<%= "/event_page/" + events[i]["_id"] %>" class="list-group-item">
+        <a href="<%= "/events/" + events[i]["_id"] %>" class="list-group-item">
 
           <%if (events[i].activity_type) { %>
             <span class="pull-right badge" style="padding-top: 5px">
@@ -36,7 +36,7 @@
         <li class="list-group-item">No entries for this search...</li>
         <% } %>
 
-        <a href="/new_event" class="list-group-item" onclick="openCreatePage()">
+        <a href="/events/new" class="list-group-item">
           <p>Don't see anything you like?</p>
           <h4 class="list-group-item-heading">Create a new Event!</h4>
         </a>
@@ -85,20 +85,20 @@
 
   </body>
   <script>
-  function openCreatePage () {
-    window.location.href = ("/new_event");
-  }
+  // function openCreatePage () {
+  //   window.location.href = ("/events/new");
+  // }
 
-  function openEventPage (eventId) {
-    console.log("Event ID", eventId);
-    window.location.href = ("/event_page/" + eventId);
-  }
+  // function openEventPage (eventId) {
+  //   console.log("Event ID", eventId);
+  //   window.location.href = ("/event_page/" + eventId);
+  // }
 
-  function getCoordinates () {
-    navigator.geolocation.getCurrentPosition(function (geoObj) {
-      console.log("Coord Setting:", geoObj);
-      document.getElementById("locationPref").value = geoObj.coords.latitude + "::" + geoObj.coords.longitude;
-    });
-  };
+  // function getCoordinates () {
+  //   navigator.geolocation.getCurrentPosition(function (geoObj) {
+  //     console.log("Coord Setting:", geoObj);
+  //     document.getElementById("locationPref").value = geoObj.coords.latitude + "::" + geoObj.coords.longitude;
+  //   });
+  // };
   </script>
 </html>
