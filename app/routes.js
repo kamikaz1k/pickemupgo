@@ -121,8 +121,9 @@ module.exports = function (app, passport) {
     // =====================================
     // NEW EVENT FORM ======================
     // =====================================
-    app.get("/events/new", function (req, res) {
-        res.render("pages/create_event");
+    app.get("/events/new", isLoggedIn, function (req, res) {
+        // console.log("###USER", req.user.name, req.user);
+        res.render("pages/create_event", { username: req.user.getUsername() });
     });
 
     // =====================================
@@ -151,15 +152,18 @@ module.exports = function (app, passport) {
     // =====================================
     app.get("/events/:eventId", function (req, res) {
 
-        EventEntry.findById(req.params.eventId, function (error, item) {
+        EventEntry.findById(req.params.eventId)
+                .populate('host')
+                .exec(function (error, item) {
             if (!error) {
-                // console.log("### query result", item);
+                console.log("### query result", item, JSON.stringify(item));
                 res.render("pages/view_event", {
-                    title: item.title,
+                    host: req.user.getUsername(),
                     eventDetails: item,
                     eventId: item._id
                 });
             } else {
+                // This also handles the invalid ID scenarios
                 // console.error("Dump Error:", error);
                 res.status(500).send({
                     error: error,
@@ -172,22 +176,59 @@ module.exports = function (app, passport) {
     // =====================================
     // EVENT DETAILS UPDATE ================
     // =====================================
-    app.post("/events/:eventId", function (req, res) {
+    app.post("/events/:eventId", isLoggedIn, function (req, res) {
 
-        EventEntry.findById(req.params.eventId, function (error, item) {
+        // Check if event belongs to the user
+
+        // Unecessary? Can be handled by data model?
+        if (!req.params.eventId) {
+            res.status(400).send({ error: "Invalid Query" });
+            return;
+        }
+
+        var eventObj = new EventEntry();
+        var updateOptions = eventObj.populateDetails(req.body).getAttributes();
+
+        // Host cannot change after creation
+        delete updateOptions.host;
+        // people comitted list is only updated by the commit attendance endpoint
+        delete updateOptions.people_committed;
+
+        updateOptions = {
+            $set: updateOptions
+        };
+
+        // var updateOptions = {};
+
+        // if (req.query.active === "false") { 
+        //     console.log("### req.query",req.query);
+        //     updateOptions = {
+        //         $set : {
+        //             "active": false
+        //         }
+        //     };
+
+        // } else if (req.query.active === "true") {
+        //     updateOptions = {
+        //         $set : {
+        //             "active": false
+        //         }
+        //     };
+        // }
+
+        console.log("### Updating ", req.params.eventId, req.query, options);
+
+        
+        // @TODO: Add Auth
+        EventEntry.findByIdAndUpdate(req.params.eventId, 
+                                     updateOptions, 
+                                     function (error, result) {
             if (!error) {
-                // console.log("### query result", item);
-                res.render("pages/view_event", {
-                    title: item.title,
-                    eventDetails: item,
-                    eventId: item._id
-                });
+                console.log("### Updated", result); 
+                res.send({ message: "Update successful", data: result }); 
             } else {
-                // console.error("Dump Error:", error);
-                res.status(500).send({
-                    error: error,
-                    msg: "SEARCH FAILED"
-                });
+                console.log("### ERROR Updating", req.params.eventId, error); 
+                res.send({ error: error });
             }
         });
     });
