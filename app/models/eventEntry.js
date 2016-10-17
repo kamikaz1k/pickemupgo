@@ -6,7 +6,10 @@ var mongoose = require('mongoose');
 var eventEntrySchema = mongoose.Schema({
 
     title               : String,
-    host                : mongoose.Schema.Types.ObjectId,
+    host                : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     location_name       : String,
     formatted_address   : String,
     url                 : String,
@@ -16,7 +19,10 @@ var eventEntrySchema = mongoose.Schema({
     end_time            : String, // Should be Date
     activity_type       : String,
     group_size          : Number,
-    people_committed    : [{type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    people_committed    : [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     location            : {
         type: {
             type: "String",
@@ -32,6 +38,8 @@ var eventEntrySchema = mongoose.Schema({
 eventEntrySchema.index({ 'location': '2dsphere' });
 
 eventEntrySchema.methods.populateDetails = function (options) {
+
+    // (new Date(Date.parse("2015-10-11 5:00 PM EST"))).toISOString() works!
 
     // Title of the Event
     this.title = options.title ? options.title : "";
@@ -75,6 +83,27 @@ eventEntrySchema.methods.populateDetails = function (options) {
             type: "Point", 
             coordinates: [ parseFloat(options.longitude), parseFloat(options.latitude) ] 
         };
+    }
+
+    return this;
+
+}
+
+eventEntrySchema.methods.getAttributes = function () {
+    return {
+        "title": this.title,
+        "host": this.host,
+        "location_name": this.location_name,
+        "formatted_address": this.formatted_address,
+        "url": this.url,
+        "active": this.active,
+        "date": this.date,
+        "start_time": this.start_time,
+        "end_time": this.end_time,
+        "activity_type": this.activity_type,
+        "group_size": this.group_size,
+        "people_committed": this.people_committed,
+        "location": this.location
     }
 }
 
