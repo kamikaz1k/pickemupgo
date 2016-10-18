@@ -154,13 +154,16 @@ module.exports = function (app, passport) {
 
         EventEntry.findById(req.params.eventId)
                 .populate('host')
-                .exec(function (error, item) {
+                .exec(queryHandler);
+
+        function queryHandler (error, item) {
             if (!error) {
                 console.log("### query result", item, JSON.stringify(item));
                 res.render("pages/view_event", {
-                    host: req.user.getUsername(),
+                    host: item.host.getUsername(),
                     eventDetails: item,
-                    eventId: item._id
+                    eventId: item._id,
+                    allowEditMode: req.user && (item.host["id"] == req.user["id"])
                 });
             } else {
                 // This also handles the invalid ID scenarios
@@ -170,15 +173,13 @@ module.exports = function (app, passport) {
                     msg: "SEARCH FAILED"
                 });
             }
-        });
+        }
     });
 
     // =====================================
     // EVENT DETAILS UPDATE ================
     // =====================================
     app.post("/events/:eventId", isLoggedIn, function (req, res) {
-
-        // Check if event belongs to the user
 
         // Unecessary? Can be handled by data model?
         if (!req.params.eventId) {
@@ -188,6 +189,7 @@ module.exports = function (app, passport) {
 
         var eventObj = new EventEntry();
         var updateOptions = eventObj.populateDetails(req.body).getAttributes();
+        var searchOptions = { "_id": req.params.eventId, "host": req.user["_id"] };
 
         // Host cannot change after creation
         delete updateOptions.host;
@@ -197,35 +199,15 @@ module.exports = function (app, passport) {
         updateOptions = {
             $set: updateOptions
         };
-
-        // var updateOptions = {};
-
-        // if (req.query.active === "false") { 
-        //     console.log("### req.query",req.query);
-        //     updateOptions = {
-        //         $set : {
-        //             "active": false
-        //         }
-        //     };
-
-        // } else if (req.query.active === "true") {
-        //     updateOptions = {
-        //         $set : {
-        //             "active": false
-        //         }
-        //     };
-        // }
-
-        console.log("### Updating ", req.params.eventId, req.query, options);
-
         
         // @TODO: Add Auth
-        EventEntry.findByIdAndUpdate(req.params.eventId, 
-                                     updateOptions, 
-                                     function (error, result) {
+        // EventEntry.findByIdAndUpdate(req.params.eventId, 
+        EventEntry.findOneAndUpdate(searchOptions,
+                                    updateOptions, 
+                                    function (error, result) {
             if (!error) {
                 console.log("### Updated", result); 
-                res.send({ message: "Update successful", data: result }); 
+                res.send({ message: "Update successful" }); 
             } else {
                 console.log("### ERROR Updating", req.params.eventId, error); 
                 res.send({ error: error });
