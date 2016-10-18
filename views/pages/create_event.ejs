@@ -18,33 +18,15 @@
   
   <div class="container">
 
-    <h2>Post an Event</h2>
+    <h2>Event Details</h2>
 
     <div>
       <form class="form-horizontal">
 
-        <!--
-
-        <div class="form-group">
-          <label for="search-long" class="col-sm-2 control-label">Longitude:</label>
-          <div class="col-sm-10">
-            <input type="number" class="form-control" id="search-long" placeholder="Long: 43.6532" value="43.6532" disabled>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="search-lat" class="col-sm-2 control-label">Latitude:</label>
-          <div class="col-sm-10">
-            <input type="number" class="form-control" id="search-lat" placeholder="Lat: 79.3832" value="79.3832" disabled>
-          </div>
-        </div>
-
-        -->
-
         <div class="form-group">
           <label for="search-event" class="col-sm-2 control-label">Event:</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" name="title" id="search-event" placeholder="e.g. Soccer" value="">
+            <input type="text" class="form-control" name="title" id="search-event" placeholder="e.g. Soccer" value="" required>
           </div>
         </div>
 
@@ -58,42 +40,49 @@
         <div class="form-group">
           <label for="search-location" class="col-sm-2 control-label">Location:</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" name="location_name" id="search-location" placeholder="e.g. YMCA" value="">
+            <input type="text" class="form-control" name="location_name" id="search-location" placeholder="e.g. YMCA" value="" required>
           </div>
+        </div>
+
+        <div style="display: none">
+          <input type="text" class="form-control" name="formatted_address" id="search-location-address" value="">
+          <input type="text" class="form-control" name="url" id="search-location-url" value="">
+          <input type="text" class="form-control" name="longitude" id="search-location-lng" value="">
+          <input type="text" class="form-control" name="latitude" id="search-location-lat" value="">
         </div>
 
         <div class="form-group">
           <label for="search-date" class="col-sm-2 control-label">Date:</label>
           <div class="col-sm-10">
-            <input type="date" class="form-control" name="date" id="search-date" placeholder="YYYY-MM-DD" value="">
+            <input type="date" class="form-control" name="date" id="search-date" placeholder="YYYY-MM-DD" value="" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="search-start" class="col-sm-2 control-label">Start Time:</label>
           <div class="col-sm-10">
-            <input type="time" class="form-control" name="start_time" id="search-start" placeholder="HH:MM AM" value="">
+            <input type="time" class="form-control" name="start_time" id="search-start" placeholder="HH:MM AM" value="" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="search-end" class="col-sm-2 control-label">End Time:</label>
           <div class="col-sm-10">
-            <input type="time" class="form-control" name="end_time" id="search-end" placeholder="HH:MM PM" value="">
+            <input type="time" class="form-control" name="end_time" id="search-end" placeholder="HH:MM PM" value="" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="search-type" class="col-sm-2 control-label">Event Type:</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" name="activity_type" id="search-type" placeholder="" value="">
+            <input type="text" class="form-control" name="activity_type" id="search-type" placeholder="" value="" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="search-size" class="col-sm-2 control-label">Group Size:</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" name="group_size" id="search-size" placeholder="" value="">
+            <input type="number" class="form-control" name="group_size" id="search-size" placeholder="" value="" required>
           </div>
         </div>
 
@@ -119,44 +108,19 @@
     <div id="map" style="height: 220px;"></div>
   </div>
 
+  <br>
+  <br>
+  <br>
+
 </body>
 <script>
 
-
-/*
-$(function() {
-    $('#getLocation').click(function() {
-        //console.log("$('form').serialize(): ",$('form').serialize());
-        navigator.geolocation.getCurrentPosition(function (geoObj) {
-          if (L) {            
-            var latLong = {
-              lat: geoObj.coords.latitude,
-              lon: geoObj.coords.longitude
-            }
-            // console.log("Coord Setting:", coords, latLong);
-            mymap.panTo(latLong);
-            $('#search-lat').val(geoObj.coords.latitude);
-            $('#search-long').val(geoObj.coords.longitude);
-
-            localStorage.latitude = geoObj.coords.latitude;
-            localStorage.longitude = geoObj.coords.longitude;
-
-            marker1.setLatLng([localStorage.latitude, localStorage.longitude]);
-
-          }
-        });
-    });
-});
-*/
-
-
-
 $(document).ready(function (){
 
-  if (localStorage.latitude && localStorage.longitude) {
-    $('#search-lat').val(localStorage.latitude);
-    $('#search-long').val(localStorage.longitude);
-  }
+  // if (localStorage.latitude && localStorage.longitude) {
+  //   $('#search-lat').val(localStorage.latitude);
+  //   $('#search-long').val(localStorage.longitude);
+  // }
 
   var latitude = localStorage.latitude || 51.505;
   var longitude = localStorage.longitude || -0.09;
@@ -178,59 +142,9 @@ $(document).ready(function (){
   window.marker1 = L.marker([latitude, longitude]);
   marker1.addTo(mymap);
 
-  //.bindPopup('Current Location')
-  //.openPopup();
-
-  /*
-  mymap.on('click', onMapClick);
-
-  function onMapClick(e) {
-    console.log("You clicked the map at " + e.latlng, e);
-    mymap.panTo(e.latlng);
-    $('#search-lat').val(e.latlng.lat);
-    $('#search-long').val(e.latlng.lng);
-
-    //Update latlng
-    var newLatitude = e.latlng.lat;
-    var newLongitude = e.latlng.lng;
-
-    //Moving marker location  
-    marker1.setLatLng([newLatitude, newLongitude]);
-
-  }
-  */
-
-  //Creating a JSON object to send form data to Server
-  (function () {
-    $.fn.serializeFormJSON = function () {
-
-        var o = {};
-        var a = this.serializeArray();
-        $.each(a, function () {
-            if (o[this.name]) {
-                if (!o[this.name].push) {
-                    o[this.name] = [o[this.name]];
-                }
-                o[this.name].push(this.value || '');
-            } else {
-                o[this.name] = this.value || '';
-            }
-        });
-
-        //Add place JSON and latlng
-        // o["place"] = place;
-        o["url"] = window.place.url;
-        o["formatted_address"] = window.place.formatted_address;
-        o["latitude"] = window.finalLatitude;
-        o["longitude"] = window.finalLongitude;
-
-        return o;
-    };
-  })();
-
   $('form').submit(function (e) {
       e.preventDefault();
-      var data = $(this).serializeFormJSON();
+      var data = $(this).serialize();
       console.log(data);
       $.ajax({
           url: '/events/new',
@@ -244,12 +158,6 @@ $(document).ready(function (){
               console.log("Error",error);
           }
       });
-
-      /* Object
-          email: "value"
-          name: "value"
-          password: "value"
-       */
   });
 
 
@@ -268,8 +176,8 @@ function initAutocomplete() {
   // fields in the form.
   autocomplete.addListener('place_changed', fillInAddress);
 
-  //place contains all the information of the selected location
-  
+  // Bias autocomplete to nearby
+  geolocate();
 
 }
 
@@ -278,19 +186,25 @@ function fillInAddress() {
   // Get the place details from the autocomplete object.
   window.place = autocomplete.getPlace();
   console.log(place);
-  var geoLocation = place.geometry.location;
+  // var geoLocation = place.geometry.location;
   //console.log(geoLocation);
-  window.finalLatitude = geoLocation.lat();
-  window.finalLongitude = geoLocation.lng();
-  marker1.setLatLng([finalLatitude, finalLongitude]);
-  mymap.panTo([finalLatitude, finalLongitude]);
+  // window.finalLatitude = geoLocation.lat();
+  // window.finalLongitude = geoLocation.lng();
+
+  $("#search-location-address").val(window.place.formatted_address);
+  $("#search-location-url").val(window.place.url);
+  $("#search-location-lng").val(place.geometry.location.lng());
+  $("#search-location-lat").val(place.geometry.location.lat());
+
+  marker1.setLatLng([place.geometry.location.lat(), place.geometry.location.lng()]);
+  mymap.panTo([place.geometry.location.lat(), place.geometry.location.lng()]);
 }    
 
 // Bias the autocomplete object to the user's geographical location,
 // as supplied by the browser's 'navigator.geolocation' object.
 function geolocate() {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
+    navigator.geolocation.getCurrentPosition(function (position) {
       var geolocation = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
@@ -300,6 +214,9 @@ function geolocate() {
         radius: position.coords.accuracy
       });
       autocomplete.setBounds(circle.getBounds());
+
+      localStorage.latitude = position.coords.latitude;
+      localStorage.longitude = position.coords.longitude;
     });
   }
 }
