@@ -16,7 +16,13 @@
 
   <% include ../partials/navbar.ejs %>
 
-  <div class="container">
+  <div class="container view-mode">
+
+    <% if (allowEditMode) { %>
+    <div class="pull-right">
+      <button id="edit-btn" class="btn btn-default glyphicon glyphicon-pencil"></button>
+    </div>
+    <% } %>
 
     <h2><%= eventDetails.title ? eventDetails.title : "No Event Title..." %></h2>
 
@@ -74,97 +80,112 @@
       <input type="hidden" id="latitude" value="<%=eventDetails.location.coordinates[1]%>">
       <input type="hidden" id="longitude" value="<%=eventDetails.location.coordinates[0]%>">
 
-      <a href="<%=eventDetails.url%>"><button id="goToMaps" type="button" class="btn btn-default">Show Google Map</button></a>
+      <a href="<%=eventDetails.url%>"><button id="open-google-maps" type="button" class="btn btn-default">Show Google Map</button></a>
       <button id="getLocation" type="button" class="btn btn-default">Where am I?</button>
 
+  </div>
+
+
+  <% if (allowEditMode) { %>
+
+  <div class="container edit-mode" style="display: none">
+
+    <div class="pull-right">
+      <button id="cancel-btn" class="btn btn-default glyphicon glyphicon-remove"></button>
+    </div>
+
+    <h2>Edit Event Details</h2>
+
     <div>
-      <!-- <form class="form-horizontal">
+      <form class="form-horizontal">
 
         <div class="form-group">
           <label for="search-event" class="col-sm-2 control-label">Event:</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" name="title" id="search-event" placeholder="e.g. Soccer" value="<%= eventDetails.title %>">
+            <input type="text" class="form-control" name="title" id="search-event" placeholder="e.g. Soccer" value="<%=eventDetails.title%>" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="search-host" class="col-sm-2 control-label">Host:</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" name="host" id="search-host" placeholder="" value="<%= eventDetails.host %>">
-
+            <input type="text" class="form-control" name="host" id="search-host" placeholder="" value="<%= host %>" disabled>
           </div>
         </div>
 
         <div class="form-group">
           <label for="search-location" class="col-sm-2 control-label">Location:</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" name="location_name" id="search-location" placeholder="e.g. YMCA" value="<%= eventDetails.location_name %>">
+            <input type="text" class="form-control" name="location_name" id="search-location" placeholder="e.g. YMCA" value="<%=eventDetails.location_name%>" required>
           </div>
+        </div>
+
+        <div style="display: none">
+          <input type="text" class="form-control" name="formatted_address" id="search-location-address" value="<%=eventDetails.formatted_address%>">
+          <input type="text" class="form-control" name="url" id="search-location-url" value="<%=eventDetails.url%>">
+          <input type="text" class="form-control" name="longitude" id="search-location-lng" value="<%=eventDetails.location.coordinates[0]%>">
+          <input type="text" class="form-control" name="latitude" id="search-location-lat" value="<%=eventDetails.location.coordinates[1]%>">
         </div>
 
         <div class="form-group">
           <label for="search-date" class="col-sm-2 control-label">Date:</label>
           <div class="col-sm-10">
-            <input type="date" class="form-control" name="date" id="search-date" placeholder="" value="<%= eventDetails.date %>">
+            <input type="date" class="form-control" name="date" id="search-date" placeholder="YYYY-MM-DD" value="<%=eventDetails.date%>" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="search-start" class="col-sm-2 control-label">Start Time:</label>
           <div class="col-sm-10">
-            <input type="time" class="form-control" name="start_time" id="search-start" placeholder="" value="<%= eventDetails.start_time %>">
+            <input type="time" class="form-control" name="start_time" id="search-start" placeholder="HH:MM AM" value="<%=eventDetails.start_time%>" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="search-end" class="col-sm-2 control-label">End Time:</label>
           <div class="col-sm-10">
-            <input type="time" class="form-control" name="end_time" id="search-end" placeholder="" value="<%= eventDetails.end_time %>">
+            <input type="time" class="form-control" name="end_time" id="search-end" placeholder="HH:MM PM" value="<%=eventDetails.end_time%>" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="search-type" class="col-sm-2 control-label">Event Type:</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" name="activity_type" id="search-type" placeholder="" value="<%= eventDetails.activity_type %>">
+            <input type="text" class="form-control" name="activity_type" id="search-type" placeholder="" value="<%=eventDetails.activity_type%>" required>
           </div>
         </div>
 
         <div class="form-group">
           <label for="search-size" class="col-sm-2 control-label">Group Size:</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" name="group_size" id="search-size" placeholder="" value="<%= eventDetails.group_size %>">
+            <input type="number" class="form-control" name="group_size" id="search-size" placeholder="" value="<%=eventDetails.group_size%>" required>
           </div>
         </div>
-
-        <input type="hidden" id="latitude" value="<%=eventDetails.location.coordinates[1]%>">
-        <input type="hidden" id="longitude" value="<%=eventDetails.location.coordinates[0]%>">
-        <a href="<%=eventDetails.url%>"><%=eventDetails.url%></a>
 
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
-
-            
-            <button id="getLocation" type="button" class="btn btn-default">Get Location</button>
-            
-
-            <button id="submitForm" type="submit" class="btn btn-success">Submit</button>
-            <button id="goToMaps" type="button" class="btn btn-default">Go to Maps</button>
+            <button id="submit-form" type="submit" class="btn btn-success">Save Changes</button>
+            <button id="cancel-event" class="btn btn-danger">Cancel Event</button>
           </div>
         </div>
 
-      </form> -->
-      <!-- <form class="form-signin" action="/event/<%- eventId %>?active=false" method="post">
-            <button id="btnSignIn" class="btn btn-lg btn-primary btn-block" type="submit">Delete Event!</button>
-      </form> -->
+      </form>
 
     </div>
   </div>
 
+  <% } %>
+
   <br>
 
   <div class="container">
-    <div id="map" style="height: 220px;"></div>
+    <div id="map" style="height: 220px;">
+  </div>
+
+  <br>
+  <br>
+  <br>
+
   </div>
 
 </body>
@@ -172,22 +193,12 @@
 
 $(document).ready(function (){
 
-  if (localStorage.latitude && localStorage.longitude) {
-    $('#search-lat').val(localStorage.latitude);
-    $('#search-long').val(localStorage.longitude);
-  }
-
-  //var latitude = localStorage.latitude || 51.505;
-  //var longitude = localStorage.longitude || -0.09;
-
-  window.eventLatitude = $("#latitude").val();
-  window.eventLongitude = $("#longitude").val();
-
-  console.log("COORDS", eventLatitude, eventLongitude);
+  var latitude = localStorage.latitude || 51.505;
+  var longitude = localStorage.longitude || -0.09;
 
   // initialize the map on the "map" div with a given center and zoom
   window.mymap = L.map('map', {
-      center: [eventLatitude, eventLongitude],
+      center: [latitude, longitude],
       zoom: 13
   });
 
@@ -199,61 +210,46 @@ $(document).ready(function (){
   }).addTo(mymap);
 
   // Add marker to map at current location
-  window.marker1 = L.marker([eventLatitude, eventLongitude]);
+  window.marker1 = L.marker([latitude, longitude]);
   marker1.addTo(mymap);
 
-
-  $(function() {
-    $('#goToMaps').click(function() {
-        window.location.href = $("#map-url").val(); 
-    });
+  $('#open-google-maps').click(function() {
+      window.location.href = $("#map-url").val(); 
   });
-
-
-  //Creating a JSON object to send form data to Server
-  (function () {
-    $.fn.serializeFormJSON = function () {
-
-        var o = {};
-        var a = this.serializeArray();
-        $.each(a, function () {
-            if (o[this.name]) {
-                if (!o[this.name].push) {
-                    o[this.name] = [o[this.name]];
-                }
-                o[this.name].push(this.value || '');
-            } else {
-                o[this.name] = this.value || '';
-            }
-        });
-
-        //Add place JSON and latlng
-        // o["place"] = place;
-        o["url"] = window.place.url;
-        o["formatted_address"] = window.place.formatted_address;
-        o["latitude"] = window.finalLatitude;
-        o["longitude"] = window.finalLongitude;
-
-        return o;
-    };
-  })();
-
+  
   $('form').submit(function (e) {
       e.preventDefault();
-      var data = $(this).serializeFormJSON();
+      var data = $(this).serialize();
       console.log(data);
       $.ajax({
-          url: '/events/new',
+          url: '/events/<%= eventDetails._id%>',
           data: data,
           type: 'POST',
           success: function(response) {
               console.log("Success",response);
-              window.location.href = response.url;
+              // window.location.href = response.url;
+              $("#cancel-btn").click();
+              window.alert("Changes saved!");
           },
           error: function(error) {
               console.log("Error",error);
           }
       });
+  });
+
+  $("#cancel-event").click(function(){
+    window.alert("Workin' on it!");
+  });
+
+  // Setup edit form toggle buttons
+  $("#edit-btn").click(function() {
+    $(".view-mode").css({ 'display': 'none' });
+    $(".edit-mode").css({ 'display': 'block' });
+  });
+
+  $("#cancel-btn").click(function() {
+    $(".view-mode").css({ 'display': 'block' });
+    $(".edit-mode").css({ 'display': 'none' });
   });
 
 
@@ -262,8 +258,6 @@ $(document).ready(function (){
 var placeSearch, autocomplete;
 
 function initAutocomplete() {
-  return;
-  console.log("MAPS READY!");
   // Create the autocomplete object, restricting the search to geographical
   // location types.
   autocomplete = new google.maps.places.Autocomplete(
@@ -274,8 +268,8 @@ function initAutocomplete() {
   // fields in the form.
   autocomplete.addListener('place_changed', fillInAddress);
 
-  //place contains all the information of the selected location
-  
+  // Bias autocomplete to nearby
+  geolocate();
 
 }
 
@@ -284,18 +278,25 @@ function fillInAddress() {
   // Get the place details from the autocomplete object.
   window.place = autocomplete.getPlace();
   console.log(place);
-  var geoLocation = place.geometry.location;
+  // var geoLocation = place.geometry.location;
   //console.log(geoLocation);
-  window.finalLatitude = geoLocation.lat();
-  window.finalLongitude = geoLocation.lng();
-  marker1.setLatLng([finalLatitude, finalLongitude]);
+  // window.finalLatitude = geoLocation.lat();
+  // window.finalLongitude = geoLocation.lng();
+
+  $("#search-location-address").val(window.place.formatted_address);
+  $("#search-location-url").val(window.place.url);
+  $("#search-location-lng").val(place.geometry.location.lng());
+  $("#search-location-lat").val(place.geometry.location.lat());
+
+  marker1.setLatLng([place.geometry.location.lat(), place.geometry.location.lng()]);
+  mymap.panTo([place.geometry.location.lat(), place.geometry.location.lng()]);
 }    
 
 // Bias the autocomplete object to the user's geographical location,
 // as supplied by the browser's 'navigator.geolocation' object.
 function geolocate() {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
+    navigator.geolocation.getCurrentPosition(function (position) {
       var geolocation = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
@@ -305,6 +306,9 @@ function geolocate() {
         radius: position.coords.accuracy
       });
       autocomplete.setBounds(circle.getBounds());
+
+      localStorage.latitude = position.coords.latitude;
+      localStorage.longitude = position.coords.longitude;
     });
   }
 }
