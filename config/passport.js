@@ -23,7 +23,6 @@ module.exports = function (passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function (id, done) {
-        console.log("deserializeUser", id);
         User.findById(id, function (err, user) {
             done(err, user);
         });
@@ -139,7 +138,7 @@ module.exports = function (passport) {
             // find the user in the database based on their facebook id
             User.findOne({ 'facebook.id' : profile.id }, function (err, user) {
 
-                console.log("USER", JSON.stringify(profile) );
+                // console.log("USER", JSON.stringify(profile) );
 
                 // if there is an error, stop everything and return that
                 // ie an error connecting to the database
