@@ -177,6 +177,9 @@ module.exports = function (app, passport) {
         }
     });
 
+    // =====================================
+    // COMMIT TO EVENT =====================
+    // =====================================
     app.post("/events/commit/:eventId", function (req, res) {
         if (!req.user) {
             res.status(400).send({ error: "You are not logged in" });
