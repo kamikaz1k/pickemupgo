@@ -162,7 +162,9 @@ module.exports = function (app, passport) {
                     host: item.host.getUsername(),
                     eventDetails: item,
                     eventId: item._id,
-                    allowEditMode: req.user && (item.host["id"] == req.user["id"])
+                    allowEditMode: req.user && (item.host["id"] == req.user["id"]),
+                    allowCommit: !!req.user, // if user is signed in allow them to commit
+                    alreadyCommitted: req.user && item.people_committed.indexOf(req.user["id"]) > -1
                 });
             } else {
                 // This also handles the invalid ID scenarios
