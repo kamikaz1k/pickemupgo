@@ -6,7 +6,7 @@ module.exports = function (app, passport) {
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
-    app.get('/', function (req, res) {
+    app.get('/', isLoggedIn, function (req, res) {
         res.render('pages/home');
     });
 
@@ -31,7 +31,6 @@ module.exports = function (app, passport) {
     // =====================================
     // show the signup form
     app.get('/signup', function (req, res) {
-
         // render the page and pass in any flash data if it exists
         res.render('pages/signup.ejs', { message: req.flash('signupMessage') });
     });
@@ -176,6 +175,40 @@ module.exports = function (app, passport) {
         }
     });
 
+    app.post("/events/commit/:eventId", function (req, res) {
+        if (!req.user) {
+            res.status(400).send({ error: "You are not logged in" });
+            return;
+        }
+
+        var searchOptions = {
+            "_id": req.params.eventId,
+            // Ensure non-duplicate entires
+            "people_committed": {
+                $ne: req.user["_id"]
+            }
+        };
+        var updateOptions = { 
+            $push: {
+                "people_committed": req.user["id"]
+            }
+        };
+        // Find Event and append user to the people_committed field
+        EventEntry.findOneAndUpdate(searchOptions, 
+                                    updateOptions,
+                                    queryHandler);
+
+        function queryHandler (error, result) {
+            if (!error) {
+                console.log("### Found", result);
+                res.send({ message: "Update successful" }); 
+            } else {
+                console.log("### ERROR Updating", req.params.eventId, error); 
+                res.status(400).send({ error: error });
+            }
+        }
+    });
+
     // =====================================
     // EVENT DETAILS UPDATE ================
     // =====================================
@@ -203,8 +236,10 @@ module.exports = function (app, passport) {
         // @TODO: Add Auth
         // EventEntry.findByIdAndUpdate(req.params.eventId, 
         EventEntry.findOneAndUpdate(searchOptions,
-                                    updateOptions, 
-                                    function (error, result) {
+                                    updateOptions,
+                                    queryHandler);
+        
+        function queryHandler (error, result) {
             if (!error) {
                 console.log("### Updated", result); 
                 res.send({ message: "Update successful" }); 
@@ -212,7 +247,7 @@ module.exports = function (app, passport) {
                 console.log("### ERROR Updating", req.params.eventId, error); 
                 res.send({ error: error });
             }
-        });
+        }
     });
 
     // =====================================
@@ -220,7 +255,7 @@ module.exports = function (app, passport) {
     // =====================================
     app.get('/logout', function (req, res) {
         req.logout();
-        res.redirect('/');
+        res.redirect('/login');
     });
 };
 
@@ -232,5 +267,5 @@ function isLoggedIn(req, res, next) {
         return next();
 
     // if they aren't redirect them to the home page
-    res.redirect('/');
+    res.redirect('/login');
 }
