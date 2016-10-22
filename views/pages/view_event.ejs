@@ -9,7 +9,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
   <!-- Leaflet End -->
-
+  <style>
+    h4 {
+      font-weight: 200;
+    }
+    p {
+      color: rgba(0,0,0,0.5);
+    }
+  </style>
 </head>
 
 <body>
@@ -74,6 +81,12 @@
         <h4 class="list-group-item-heading">
           <%= eventDetails.group_size ? eventDetails.group_size : "Open Ended!" %>
         </h4>
+        <% if (allowCommit) { %>
+          <button id="commit"
+              class="btn btn-default pull-right"
+              style="position: relative; top: -37px;"
+              <%= alreadyCommitted ? "disabled" : "" %> ><%= alreadyCommitted ? "Committed!" : "Commit" %></button>
+        <% } %>
       </span>
       
     </div>
@@ -240,6 +253,20 @@ $(document).ready(function (){
   $("#cancel-event").click(function(){
     window.alert("Workin' on it!");
   });
+
+  $("#commit").click(function(){
+      $.ajax({
+          url: '/events/commit/<%= eventDetails._id%>',
+          type: 'POST',
+          success: function(response) {
+              console.log("Success",response);
+              alert("SUCCESS!");
+          },
+          error: function(error) {
+              console.log("Error",error);
+          }
+      });
+  })
 
   // Setup edit form toggle buttons
   $("#edit-btn").click(function() {
