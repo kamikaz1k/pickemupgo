@@ -18,31 +18,42 @@
             <div class="row">
 
                 <!-- LOCAL INFORMATION -->
-                <div class="col-sm-6">
+                <div class="col-sm-6 col-sm-offset-3">
                     <div class="well">
+
+                        <% if (user.local.email) { %>
                         <h3><span class="fa fa-user"></span> Local</h3>
+                        <p>
+                            <strong>name</strong>: <%= user.local.name %><br>
+                            <strong>email</strong>: <%= user.local.email %><br>
+                        </p>
+                        <% } %>
 
-                            <p>
-                                <strong>id</strong>: <%= user._id %><br>
-                                <strong>email</strong>: <%= user.local.email %><br>
-                                <strong>password</strong>: <%= user.local.password %>
-                            </p>
+                        <% if (user.facebook.id) { %>
+                        <h3 class="text-primary">
+                            <span class="fa fa-facebook facebook" style="padding: 5px; padding-left: 14px; border-radius: 20%;"></span> Profile Info
+                        </h3>
+                        <p>
+                            <strong>Email</strong>: <%= user.facebook.email %><br>
+                            <strong>Name</strong>: <%= user.facebook.name %>
+                        </p>
+                        <% } %>
 
-                    </div>
-                </div>
+                        <% if (user.twitter.id) { %>
+                        <h3 class="text-primary"><span class="fa fa-twitter twitter" style="padding: 5px; border-radius: 20%;"></span> Profile Info</h3>
+                        <p>
+                            <strong>Name</strong>: <%= user.twitter.displayName %><br>
+                            <strong>Username</strong>: <%= user.twitter.username %>
+                        </p>
+                        <% } %>
 
-                <!-- FACEBOOK INFORMATION -->
-                <div class="col-sm-6">
-                    <div class="well">
-                        <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
-
-                            <p>
-                                <strong>id</strong>: <%= user.facebook.id %><br>
-                                <strong>token</strong>: <%= user.facebook.token %><br>
-                                <strong>email</strong>: <%= user.facebook.email %><br>
-                                <strong>name</strong>: <%= user.facebook.name %>
-                            </p>
-
+                        <% if (user.google.id) { %>
+                        <h3 class="text-primary"><span class="fa fa-google google" style="padding: 5px; border-radius: 20%;"></span> Profile Info</h3>
+                        <p>
+                            <strong>Email</strong>: <%= user.google.email %><br>
+                            <strong>Name</strong>: <%= user.google.name %>
+                        </p>
+                        <% } %>
                     </div>
                 </div>
 
