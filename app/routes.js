@@ -69,6 +69,20 @@ module.exports = function (app, passport) {
     }));
 
     // =====================================
+    // GOOGLE ROUTES =======================
+    // =====================================
+    // route for google authentication and login
+    app.get('/auth/google', passport.authenticate('google', { 
+        scope : ['email']
+    }));
+
+    // handle the callback after google has authenticated the user
+    app.get('/auth/google/callback', passport.authenticate('google', {
+        successRedirect : '/profile',
+        failureRedirect : '/'
+    }));
+
+    // =====================================
     // PROFILE SECTION =====================
     // =====================================
     // we will want this protected so you have to be logged in to visit
