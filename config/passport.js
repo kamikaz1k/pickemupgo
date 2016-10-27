@@ -1,6 +1,7 @@
 // load all the things we need
 var LocalStrategy   = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
+var TwitterStrategy = require('passport-twitter').Strategy;
 
 // load up the user model
 var User            = require('../app/models/user');
@@ -133,7 +134,7 @@ module.exports = function (passport) {
     function (token, refreshToken, profile, done) {
 
         // asynchronous
-        process.nextTick(function () {
+        // process.nextTick(function () {
 
             // find the user in the database based on their facebook id
             User.findOne({ 'facebook.id' : profile.id }, function (err, user) {
@@ -169,9 +170,64 @@ module.exports = function (passport) {
                 }
 
             });
-        });
+        // });
 
     }));
 
+    // =========================================================================
+    // TWITTER =================================================================
+    // =========================================================================
+    passport.use(new TwitterStrategy({
+
+        // pull in our app id and secret from our auth.js file
+        consumerKey     : configAuth.twitterAuth.consumerKey,
+        consumerSecret  : configAuth.twitterAuth.consumerSecret,
+        callbackURL     : configAuth.twitterAuth.callbackURL
+
+    },
+
+    // facebook will send back the token and profile
+    function (token, tokenSecret, profile, done) {
+
+        // asynchronous
+        // process.nextTick(function () {
+
+            // find the user in the database based on their facebook id
+            User.findOne({ 'twitter.id' : profile.id }, function (err, user) {
+
+                console.log("USER", JSON.stringify(profile));
+
+                // if there is an error, stop everything and return that
+                // ie an error connecting to the database
+                if (err)
+                    return done(err);
+
+                // if the user is found, then log them in
+                if (user) {
+                    return done(null, user); // user found, return that user
+                } else {
+                    // if there is no user found with that facebook id, create them
+                    var newUser            = new User();
+
+                    // set all of the facebook information in our user model
+                    newUser.twitter.id    = profile.id; // set the users twitter id                   
+                    newUser.twitter.token = token; // we will save the token that twitter provides to the user                    
+                    newUser.twitter.displayName  = profile.displayName; // look at the passport user profile to see how names are returned
+                    newUser.twitter.username = profile.username; // twitter can return multiple emails so we'll take the first
+
+                    // save our user to the database
+                    newUser.save(function (err) {
+                        if (err)
+                            throw err;
+
+                        // if successful, return the new user
+                        return done(null, newUser);
+                    });
+                }
+
+            });
+        // });
+
+    }));
 
 };

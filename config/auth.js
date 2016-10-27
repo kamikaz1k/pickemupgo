@@ -1,4 +1,5 @@
 // expose our config directly to our application using module.exports
+
 module.exports = {
 
     'facebookAuth' : {
@@ -8,9 +9,9 @@ module.exports = {
     },
 
     'twitterAuth' : {
-        'consumerKey'       : 'your-consumer-key-here',
-        'consumerSecret'    : 'your-client-secret-here',
-        'callbackURL'       : 'http://localhost:5000/auth/twitter/callback'
+        'consumerKey'       : process.env.TWIT_CONSUMER_KEY, //'your-consumer-key-here',
+        'consumerSecret'    : process.env.TWIT_CONSUMER_SECRET, //'your-client-secret-here',
+        'callbackURL'       : process.env.TWIT_CALLBACK_URL //'http://localhost:5000/auth/twitter/callback'
     },
 
     'googleAuth' : {
